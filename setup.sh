@@ -61,21 +61,32 @@ else
     echo "[setup] ✓ bashrc loader already present"
 fi
 
-# ---- 6. Link rclone config ----
-RCLONE_CONF_BACKUP="$PROFILE_ROOT/rclone/rclone.conf"
-if [ -f "$RCLONE_CONF_BACKUP" ]; then
+# ---- 6. Decrypt secrets (if needed) ----
+SECRETS_DIR="$PROFILE_ROOT/secrets"
+ENCRYPTED_FILE="$PROFILE_ROOT/secrets.enc"
+if [ ! -d "$SECRETS_DIR" ] || [ -z "$(ls -A "$SECRETS_DIR" 2>/dev/null)" ]; then
+    if [ -f "$ENCRYPTED_FILE" ]; then
+        echo "[setup] secrets.enc found. Decrypting..."
+        "$PROFILE_ROOT/bin/secrets-unlock"
+    fi
+else
+    echo "[setup] ✓ secrets already decrypted"
+fi
+
+# ---- 7. Restore secrets → system locations ----
+# rclone config
+if [ -f "$SECRETS_DIR/rclone.conf" ]; then
     mkdir -p "$HOME/.config/rclone"
     if [ ! -f "$HOME/.config/rclone/rclone.conf" ]; then
-        cp "$RCLONE_CONF_BACKUP" "$HOME/.config/rclone/rclone.conf"
+        cp "$SECRETS_DIR/rclone.conf" "$HOME/.config/rclone/rclone.conf"
         echo "[setup] ✓ rclone config restored"
     else
         echo "[setup] ✓ rclone config already present"
     fi
 fi
-
-# ---- 7. Restore netrc (wandb, etc.) ----
-if [ -f "$PROFILE_ROOT/secrets/netrc" ] && [ ! -f "$HOME/.netrc" ]; then
-    cp "$PROFILE_ROOT/secrets/netrc" "$HOME/.netrc"
+# netrc (wandb, etc.)
+if [ -f "$SECRETS_DIR/netrc" ] && [ ! -f "$HOME/.netrc" ]; then
+    cp "$SECRETS_DIR/netrc" "$HOME/.netrc"
     chmod 600 "$HOME/.netrc"
     echo "[setup] ✓ netrc restored (wandb credentials)"
 elif [ -f "$HOME/.netrc" ]; then
