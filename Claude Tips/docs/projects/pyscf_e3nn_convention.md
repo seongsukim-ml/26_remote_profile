@@ -25,35 +25,43 @@ PySCF(libcint)만 비표준 순서를 사용한다. l≥2는 양쪽 동일.
 
 좌표를 `[:, [1,2,0]]`으로 넣으면 e3nn의 양자화축이 Z로 이동 → PySCF와 일치.
 
-## 실험으로 확인된 사실
+### 3. 근본 원인
 
-### e3nn 양자화축 = Y축
+e3nn v0.2.2에서 Euler angle convention을 ZYZ → YXY로 의도적으로 변경.
+결과적으로 l=1 SH 출력이 (x,y,z) 순서가 되어 프로그래밍이 편해짐.
 
-```python
-from e3nn import o3
-import torch
-
-vecs = torch.eye(3)  # x, y, z 단위벡터
-sh = o3.spherical_harmonics(1, vecs, normalize=True, normalization='component')
-# x-hat → m=-1 활성화 (√3, 0, 0)
-# y-hat → m=0  활성화 (0, √3, 0)  ← 양자화축
-# z-hat → m=+1 활성화 (0, 0, √3)
+```
+e3nn: (m=-1, m=0, m=+1) = (x, y, z)  ← 프로그래밍 편의
+물리: (m=-1, m=0, m=+1) = (y, z, x)  ← L_z 대각화 (1920년대~)
 ```
 
-### 좌표 `[:,[1,2,0]]` 적용 후
+이 l=1의 선택이 CG 계수를 통해 모든 l≥2에 전파되어
+d_{m=0} = dy² (e3nn) vs dz² (물리학) 차이 발생.
 
-```python
-sh_perm = o3.spherical_harmonics(1, vecs[:, [1,2,0]], ...)
-# z-hat → m=0 활성화 → 양자화축이 Z로 이동 ✓
-```
+## 축 일치의 필요성
 
-### d-orbital (l=2)
+### l=1: 축 안 맞춰도 됨 (조건부)
 
-```python
-sh2 = o3.spherical_harmonics(2, vecs, ...)
-# native:  m=0 최대 방향 = y → dy² (Y축 양자화)
-# [1,2,0]: m=0 최대 방향 = z → dz² (Z축 양자화, PySCF 일치) ✓
-```
+l=1의 real SH = Cartesian 좌표 (x,y,z) 자체. 어떤 축이 m=0이든
+물리적 회전은 같은 3×3 R 행렬로 변환됨. **단, d-orbital이 없는 basis에서만**.
+
+### l≥2: 반드시 맞춰야 함
+
+같은 물리적 회전에 대해 D²_Y ≠ D²_Z (||차이|| = 2.83).
+축을 안 맞추면 model output과 target이 다른 Wigner D로 변환되어
+**equivariance 자체가 깨짐** (loss가 회전에 따라 달라짐).
+
+### 변환을 피할 수 없는 이유
+
+| 방법 | 코드 | 오버헤드 | 위험도 |
+|------|------|---------|--------|
+| `[:,[1,2,0]]` (현재) | 0줄 | ~0 ms | 없음 |
+| D_block matmul | ~10줄 | +0.12 ms | 낮음 |
+| e3nn 소스 수정 | ~100줄 | 0 ms | **높음** |
+| e3nn fork | ~100줄 | 0 ms | 중간 |
+
+**결론: `[:,[1,2,0]]` 한 줄이 최선.** 모든 대안이 이보다 비쌈.
+e3nn의 convention 문제는 커뮤니티 전체가 인지하는 알려진 이슈.
 
 ## Equivariance는 깨지지 않는다
 
@@ -69,82 +77,76 @@ z축 방향 edge (0,0,1)에 대해:
 ✗ 그대로 입력:  m=+1 활성화 → PySCF의 px와 대응 (잘못된 매칭!)
 ```
 
-모델이 edge의 SH 성분으로 Hamiltonian p-block을 예측할 때,
-edge와 target의 축 convention이 일치해야 올바른 물리적 대응을 학습한다.
-
-**핵심**: 두 변환 (Hamiltonian `[1,2,0]` + 좌표 `[:,[1,2,0]]`)은 **반드시 짝으로** 적용되어야 한다.
-하나만 빠지면 성능 저하. 둘 다 빠지면 아래 조건부로 가능.
-
-## s,p만 있는 basis: 변환 완전 제거 가능
-
-d-orbital이 없는 경우 (e.g., 6-31G):
-
-- e3nn native: (m=-1, m=0, m=+1) = (x, y, z) 방향
-- PySCF native: (px, py, pz) = (x, y, z) 방향
-- **물리적 방향이 이미 일치** → 양쪽 변환 모두 제거 가능, zero-cost
-
-d-orbital이 있는 경우 (e.g., def2-SVP):
-
-- e3nn native d_{m=0} = dy² ≠ PySCF d_{m=0} = dz²
-- 좌표 `[:,[1,2,0]]` 필수 → Hamiltonian p-변환도 함께 필수
+**핵심**: 좌표 `[:,[1,2,0]]`과 Hamiltonian `[1,2,0]` permutation은 **세트**.
+하나만 적용하면 불일치. 둘 다 적용하거나 둘 다 안 하거나.
 
 ## 성능: 변환 비용과 최적화
 
-### 현재 구현의 문제
+### Permutation index 캐싱으로 GPU 545x 향상
 
-`matrix_transform_single()`은 매 호출마다 Python loop로 index를 재계산.
-**GPU에서 특히 치명적** — CUDA kernel launch가 orbital 수만큼 반복.
-
-| 분자 | 현재 (CPU) | 현재 (GPU) | 비고 |
-|------|-----------|-----------|------|
-| CH4 (34 orb) | 0.18 ms | 0.66 ms | GPU가 3.7x 느림 |
-| C6H6 (114 orb) | 0.54 ms | 1.91 ms | GPU가 3.5x 느림 |
-| C60 (840 orb) | 2.95 ms | **12.0 ms** | GPU가 4.1x 느림 |
-
-### 해결: Permutation index 캐싱
-
-atom 조합별로 index를 한 번만 계산하고 재사용:
+현재 `matrix_transform_single()`은 매 호출마다 Python loop로 index 재계산.
+GPU에서 CUDA kernel launch가 누적되어 오히려 CPU보다 느림.
 
 ```python
-def build_transform_index(atoms_list, conv):
-    """한 번만 계산해서 캐싱"""
-    orbitals, orbitals_order = "", []
-    for a in atoms_list:
-        offset = len(orbitals_order)
-        orbitals += conv.atom_to_orbitals_map[a]
-        orbitals_order += [i + offset for i in conv.orbital_order_map[a]]
-    indices = []
-    for orb in orbitals:
-        offset = sum(map(len, indices))
-        indices.append(torch.tensor(conv.orbital_idx_map[orb], dtype=torch.long) + offset)
-    return torch.cat([indices[i] for i in orbitals_order])
-
-# 사용
+# 한 번만 계산
 cached_idx = build_transform_index(atoms, conv).to(device)
+# 매번 사용
 H_transformed = H[..., cached_idx, :][..., :, cached_idx]
 ```
 
-| 분자 | 현재 (GPU) | 캐싱 (GPU) | 속도 향상 |
-|------|-----------|-----------|----------|
-| CH4 | 0.66 ms | 0.017 ms | **39x** |
-| C6H6 | 1.91 ms | 0.017 ms | **112x** |
+| 분자 | 현재 (GPU) | 캐싱 (GPU) | 향상 |
+|------|-----------|-----------|------|
+| CH4 | 0.66 ms | 0.017 ms | 39x |
+| C6H6 | 1.91 ms | 0.017 ms | 112x |
 | C60 | 12.0 ms | 0.022 ms | **545x** |
 
-### 더 나은 방법: 전처리 시 적용
+## Tensor Expansion과 SO(2) 근사
 
-데이터셋 저장 시 변환된 행렬을 저장하면 학습 시 비용 = 0.
-좌표 `[:,[1,2,0]]`만 forward pass에서 적용 (0.015 ms, 무시 가능).
+### CG Expansion의 구조
 
-## QHFlow2에서의 처리
+Hamiltonian block을 CG 채널별로 분해하면:
 
-현재 올바르게 구현되어 있음:
+| Block type | l_in=0 (isotropic) | 높은 l_in | 의미 |
+|------------|-------------------|-----------|------|
+| **Diagonal** (ii) | **98-100%** | <2% | 거의 isotropic |
+| **C-H off-diag** | 90% | 10% | σ 지배적 |
+| **O-H off-diag** | 56% | 44% | σ/π 혼합 |
+| **H-H off-diag** | 16% | **84%** | 방향성 지배적 |
 
-1. **Hamiltonian**: `orbital_conventions.py`에서 p-orbital `[1,2,0]` permute
-2. **좌표**: 모델에서 `o3.spherical_harmonics(..., edge_vec[:, [1,2,0]], ...)`
-3. **역변환**: `back2pyscf` convention으로 예측 → PySCF 복원
+→ Diagonal: 저랭크 근사 가능. Off-diagonal: 모든 l_in 필요.
 
-관련 파일:
+### Local frame에서 off-diagonal 대각성
 
-- `src/common/orbital_conventions.py` — convention 정의
-- `src/common/matrix_transforms.py` — 변환 엔진
-- `src/models/QHFlow.py` — 좌표 permutation 적용
+Off-diagonal block을 bond 방향 local frame에서 측정하면:
+
+| Block | local frame 대각 비율 |
+|-------|---------------------|
+| C-H, C-C, O-H p-p | **99.5-100%** |
+| H-H p-p (근거리) | 95-99% |
+| C-C d-d | **100%** |
+| **p-d cross** | **~50%** (대각 근사 부적합) |
+
+→ p-p, d-d: σ/π/δ 파라미터로 거의 완벽히 표현 가능
+→ p-d cross: bandwidth 확장 필요
+
+### SO(2) Expansion 가능성
+
+Full CG 대신 local frame에서 m-diagonal 예측 후 Wigner D로 복원:
+
+| Block | Full CG params | SO(2) bw=0 | SO(2) bw=1 |
+|-------|---------------|------------|------------|
+| p-p | 9 | 3 (67%↓) | 7 |
+| d-d | 25 | 5 (80%↓) | 13 |
+| p-d | 15 | 3 (80%↓) | 7 |
+
+Diagonal block(ii)은 변경 없이 기존 CG 유지 (이미 l_in=0 지배적이라 저렴).
+
+## QHFlow2 관련 파일
+
+| 파일 | 역할 |
+|------|------|
+| `src/common/orbital_conventions.py` | convention 정의 |
+| `src/common/matrix_transforms.py` | 변환 엔진 |
+| `src/models/QHFlow.py` | 좌표 permutation |
+| `src/models/layers.py` | Expansion 클래스 (CG tensor product) |
+| `src/utils.py` | 간단한 Expansion (weight 없는 버전) |

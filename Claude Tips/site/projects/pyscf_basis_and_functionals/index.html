@@ -1,0 +1,2184 @@
+
+<!doctype html>
+<html lang="ko" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="NCloud ML Server 운영 팁 모음">
+      
+      
+      
+      
+        <link rel="prev" href="../irrep_decompose_report/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+    
+    
+      
+        <title>PySCF Basis & Functionals - Claude Tips</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pyscf-basis-sets-xc-functionals" class="md-skip">
+          콘텐츠로 이동
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="상단/헤더">
+    <a href="../.." title="Claude Tips" class="md-header__button md-logo" aria-label="Claude Tips" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Claude Tips
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              PySCF Basis & Functionals
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="라이트 모드로 전환"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="라이트 모드로 전환" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="다크 모드로 전환"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="다크 모드로 전환" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="검색" placeholder="검색" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="검색">
+        
+        <button type="reset" class="md-search__icon md-icon" title="지우기" aria-label="지우기" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            검색 초기화
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="네비게이션" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Claude Tips" class="md-nav__button md-logo" aria-label="Claude Tips" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Claude Tips
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    General
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    General
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Server
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Server
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../server/http_proxy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Proxy (브라우저 접근)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../server/http_server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Server 실행
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../server/gpu_test/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU 테스트
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Python
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/persistent_conda/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Persistent Conda
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/conda_uv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conda + uv
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/plot_style_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plot Style Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/directory_structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    디렉토리 구조
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/dft_metadata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DFT Metadata Template
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    (프로젝트별 팁은 여기에 추가)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pyscf_e3nn_convention/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PySCF vs e3nn Convention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dft_matrix_template/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DFT Matrix Template
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../irrep_decompose_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Irrep Decomposition Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PySCF Basis & Functionals
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PySCF Basis & Functionals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="목차">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      목차
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-basis-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Basis Set 계층 구조
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Basis Set 계층 구조">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        주요 개념
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-karlsruhe-def2-family-hamiltonian-ml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Karlsruhe def2 Family (Hamiltonian ML 표준)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Karlsruhe def2 Family (Hamiltonian ML 표준)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basis-functions-per-atom-spherical-harmonics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basis Functions per Atom (Spherical Harmonics)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hamiltonian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hamiltonian 행렬 크기 비교
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-dunning-cc-pvxz-family" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Dunning cc-pVXZ Family
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-pople-family-6-31g" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Pople Family (6-31G 계열)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-xc-functionals-jacobs-ladder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. XC Functionals — Jacob's Ladder
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. XC Functionals — Jacob&#39;s Ladder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rung-1-lda-local-density-approximation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rung 1: LDA (Local Density Approximation)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rung-2-gga-generalized-gradient-approximation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rung 2: GGA (Generalized Gradient Approximation)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rung-3-meta-gga" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rung 3: meta-GGA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rung-4-hybrid-functionals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rung 4: Hybrid Functionals
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rung-5-double-hybrid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rung 5: Double-Hybrid
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gmtkn55-wtmad-2-kcalmol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GMTKN55 벤치마크 순위 (WTMAD-2, kcal/mol)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-density-fitting-ri" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Density Fitting (RI 근사)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-hamiltonian-ml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Hamiltonian ML 논문에서의 선택
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 실용 권장 사항
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 실용 권장 사항">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        데이터 생성용 (기존 문헌 호환)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        고정밀 참조 데이터 생성용
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        프로토타이핑/디버깅용
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#basis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basis 선택 의사결정 트리
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        참고 자료
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="목차">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      목차
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-basis-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Basis Set 계층 구조
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Basis Set 계층 구조">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        주요 개념
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-karlsruhe-def2-family-hamiltonian-ml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Karlsruhe def2 Family (Hamiltonian ML 표준)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Karlsruhe def2 Family (Hamiltonian ML 표준)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basis-functions-per-atom-spherical-harmonics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basis Functions per Atom (Spherical Harmonics)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hamiltonian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hamiltonian 행렬 크기 비교
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-dunning-cc-pvxz-family" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Dunning cc-pVXZ Family
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-pople-family-6-31g" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Pople Family (6-31G 계열)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-xc-functionals-jacobs-ladder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. XC Functionals — Jacob's Ladder
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. XC Functionals — Jacob&#39;s Ladder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rung-1-lda-local-density-approximation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rung 1: LDA (Local Density Approximation)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rung-2-gga-generalized-gradient-approximation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rung 2: GGA (Generalized Gradient Approximation)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rung-3-meta-gga" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rung 3: meta-GGA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rung-4-hybrid-functionals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rung 4: Hybrid Functionals
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rung-5-double-hybrid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rung 5: Double-Hybrid
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gmtkn55-wtmad-2-kcalmol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GMTKN55 벤치마크 순위 (WTMAD-2, kcal/mol)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-density-fitting-ri" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Density Fitting (RI 근사)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-hamiltonian-ml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Hamiltonian ML 논문에서의 선택
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 실용 권장 사항
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 실용 권장 사항">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        데이터 생성용 (기존 문헌 호환)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        고정밀 참조 데이터 생성용
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        프로토타이핑/디버깅용
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#basis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basis 선택 의사결정 트리
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        참고 자료
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="pyscf-basis-sets-xc-functionals">PySCF Basis Sets &amp; XC Functionals 가이드<a class="headerlink" href="#pyscf-basis-sets-xc-functionals" title="Permanent link">&para;</a></h1>
+<p>Hamiltonian ML 연구자를 위한 실용 가이드. 각 basis set의 크기, 정확도, 비용과 functional의 특성을 정리합니다.</p>
+<hr />
+<h2 id="1-basis-set">1. Basis Set 계층 구조<a class="headerlink" href="#1-basis-set" title="Permanent link">&para;</a></h2>
+<p>Basis set은 원자 오비탈을 근사하는 함수의 집합입니다. 함수 수가 많을수록 정확하지만 비용이 증가합니다.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Minimal (STO-3G)  →  Double-Zeta (DZ)  →  Triple-Zeta (TZ)  →  Quadruple-Zeta (QZ)  →  CBS
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  ~1 func/AO          ~2-3 func/AO         ~4-5 func/AO          ~7-8 func/AO            ∞
+</code></pre></div>
+<p><strong>DFT에서는 수렴이 빠릅니다</strong>: TZ면 거의 수렴, QZ면 CBS와 차이 무시 가능.
+<strong>Correlated methods (CCSD(T))에서는 느림</strong>: QZ 또는 CBS extrapolation 필요.</p>
+<h3 id="_1">주요 개념<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>기능</th>
+<th>표기</th>
+<th>역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Polarization</strong></td>
+<td><code>*</code>, <code>(d)</code>, <code>(d,p)</code>, <code>P</code> in SVP</td>
+<td>화학 결합 기술 (d on heavy, p on H)</td>
+</tr>
+<tr>
+<td><strong>Diffuse</strong></td>
+<td><code>+</code>, <code>aug-</code>, <code>D</code> in SVPD</td>
+<td>음이온, 여기 상태, 약한 상호작용</td>
+</tr>
+<tr>
+<td><strong>Density Fitting</strong></td>
+<td><code>-jkfit</code>, <code>-ri</code></td>
+<td>RI 근사용 보조 basis (4-idx → 3-idx)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-karlsruhe-def2-family-hamiltonian-ml">2. Karlsruhe def2 Family (Hamiltonian ML 표준)<a class="headerlink" href="#2-karlsruhe-def2-family-hamiltonian-ml" title="Permanent link">&para;</a></h2>
+<p>Weigend &amp; Ahlrichs (2005). H-Rn까지 균일하게 정의. <strong>QH9/QHNet/QHFlow의 표준</strong>.</p>
+<h3 id="basis-functions-per-atom-spherical-harmonics">Basis Functions per Atom (Spherical Harmonics)<a class="headerlink" href="#basis-functions-per-atom-spherical-harmonics" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Basis</th>
+<th>PySCF 이름</th>
+<th style="text-align: center;">H</th>
+<th style="text-align: center;">C, N, O, F</th>
+<th style="text-align: center;">수준</th>
+<th style="text-align: center;">상대 비용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>def2-SV(P)</td>
+<td><code>'def2-sv(p)'</code></td>
+<td style="text-align: center;">2 (1s)</td>
+<td style="text-align: center;">14 (3s2p1d)</td>
+<td style="text-align: center;">DZ (H 무편극)</td>
+<td style="text-align: center;">1x</td>
+</tr>
+<tr>
+<td><strong>def2-SVP</strong></td>
+<td><code>'def2-svp'</code></td>
+<td style="text-align: center;"><strong>5 (2s1p)</strong></td>
+<td style="text-align: center;"><strong>14 (3s2p1d)</strong></td>
+<td style="text-align: center;"><strong>DZ</strong></td>
+<td style="text-align: center;"><strong>1x</strong></td>
+</tr>
+<tr>
+<td>def2-SVPD</td>
+<td><code>'def2-svpd'</code></td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">19</td>
+<td style="text-align: center;">DZ + diffuse</td>
+<td style="text-align: center;">1.5x</td>
+</tr>
+<tr>
+<td>def2-TZVP</td>
+<td><code>'def2-tzvp'</code></td>
+<td style="text-align: center;">11 (3s1p)</td>
+<td style="text-align: center;">31 (5s3p2d1f)</td>
+<td style="text-align: center;">TZ</td>
+<td style="text-align: center;">4-6x</td>
+</tr>
+<tr>
+<td>def2-TZVPP</td>
+<td><code>'def2-tzvpp'</code></td>
+<td style="text-align: center;">14 (3s2p1d)</td>
+<td style="text-align: center;">31 (5s3p2d1f)</td>
+<td style="text-align: center;">TZ</td>
+<td style="text-align: center;">5-7x</td>
+</tr>
+<tr>
+<td>def2-QZVP</td>
+<td><code>'def2-qzvp'</code></td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">55 (7s4p3d2f1g)</td>
+<td style="text-align: center;">QZ</td>
+<td style="text-align: center;">15-25x</td>
+</tr>
+<tr>
+<td>def2-QZVPP</td>
+<td><code>'def2-qzvpp'</code></td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">55</td>
+<td style="text-align: center;">QZ</td>
+<td style="text-align: center;">20-30x</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">def2-SVP의 orbital 구조 (Hamiltonian ML에서 중요)</p>
+<p>C, N, O, F: <strong>3s + 2p + 1d = 3×1 + 2×3 + 1×5 = 14 basis functions</strong>
+H: <strong>2s + 1p = 2×1 + 1×3 = 5 basis functions</strong></p>
+<p>이것이 QHFlow2에서 <code>MAX_ORBITAL_LENGTH = 14</code>인 이유입니다.</p>
+</div>
+<h3 id="hamiltonian">Hamiltonian 행렬 크기 비교<a class="headerlink" href="#hamiltonian" title="Permanent link">&para;</a></h3>
+<p>전형적인 QM9 분자 (예: C₇H₁₀O₂, 19 atoms):</p>
+<table>
+<thead>
+<tr>
+<th>Basis</th>
+<th style="text-align: center;">Basis functions</th>
+<th style="text-align: center;">H 행렬 크기</th>
+<th style="text-align: center;">원소 수</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>def2-SVP</td>
+<td style="text-align: center;">~150</td>
+<td style="text-align: center;">150 × 150</td>
+<td style="text-align: center;">22,500</td>
+</tr>
+<tr>
+<td>def2-TZVP</td>
+<td style="text-align: center;">~450</td>
+<td style="text-align: center;">450 × 450</td>
+<td style="text-align: center;">202,500</td>
+</tr>
+<tr>
+<td>def2-QZVP</td>
+<td style="text-align: center;">~800</td>
+<td style="text-align: center;">800 × 800</td>
+<td style="text-align: center;">640,000</td>
+</tr>
+</tbody>
+</table>
+<p><strong>def2-SVP → def2-TZVP</strong>: 행렬 크기 <strong>9배</strong>, 계산 비용 <strong>수십 배</strong> 증가.</p>
+<hr />
+<h2 id="3-dunning-cc-pvxz-family">3. Dunning cc-pVXZ Family<a class="headerlink" href="#3-dunning-cc-pvxz-family" title="Permanent link">&para;</a></h2>
+<p>Dunning (1989). CBS extrapolation에 최적화. Correlated methods (CCSD(T)) 벤치마크용.</p>
+<table>
+<thead>
+<tr>
+<th>Basis</th>
+<th>PySCF 이름</th>
+<th style="text-align: center;">H</th>
+<th style="text-align: center;">C, N, O</th>
+<th style="text-align: center;">수준</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cc-pVDZ</td>
+<td><code>'cc-pvdz'</code></td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">DZ</td>
+</tr>
+<tr>
+<td>cc-pVTZ</td>
+<td><code>'cc-pvtz'</code></td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">TZ</td>
+</tr>
+<tr>
+<td>cc-pVQZ</td>
+<td><code>'cc-pvqz'</code></td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">55</td>
+<td style="text-align: center;">QZ</td>
+</tr>
+<tr>
+<td>cc-pV5Z</td>
+<td><code>'cc-pv5z'</code></td>
+<td style="text-align: center;">55</td>
+<td style="text-align: center;">91</td>
+<td style="text-align: center;">5Z</td>
+</tr>
+</tbody>
+</table>
+<p>Augmented (diffuse 추가): <code>'aug-cc-pvdz'</code>, <code>'aug-cc-pvtz'</code>, ...</p>
+<div class="admonition note">
+<p class="admonition-title">def2 vs cc-pV_Z 비교</p>
+<p>DZ 수준에서 def2-SVP와 cc-pVDZ는 <strong>거의 같은 크기</strong> (C: 14 functions).
+TZ에서 def2-TZVP (31)와 cc-pVTZ (30)도 유사.
+DFT에서는 def2가 약간 더 효율적, correlated methods에서는 cc-pVXZ가 적합.</p>
+</div>
+<hr />
+<h2 id="4-pople-family-6-31g">4. Pople Family (6-31G 계열)<a class="headerlink" href="#4-pople-family-6-31g" title="Permanent link">&para;</a></h2>
+<p>Legacy basis. 유기화학에서 여전히 많이 사용되지만, 새 벤치마크에는 비권장.</p>
+<table>
+<thead>
+<tr>
+<th>Basis</th>
+<th>PySCF 이름</th>
+<th style="text-align: center;">H</th>
+<th style="text-align: center;">C, N, O</th>
+<th style="text-align: center;">수준</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>STO-3G</td>
+<td><code>'sto-3g'</code></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">Minimal</td>
+</tr>
+<tr>
+<td>3-21G</td>
+<td><code>'3-21g'</code></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">Split-valence</td>
+</tr>
+<tr>
+<td>6-31G</td>
+<td><code>'6-31g'</code></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">DZ (valence)</td>
+</tr>
+<tr>
+<td>6-31G*</td>
+<td><code>'6-31g*'</code></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">DZ + pol.</td>
+</tr>
+<tr>
+<td>6-31G**</td>
+<td><code>'6-31g**'</code></td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">DZ + pol. (H도)</td>
+</tr>
+<tr>
+<td>6-311G**</td>
+<td><code>'6-311g**'</code></td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">18</td>
+<td style="text-align: center;">TZ + pol.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">6-31G 계열의 한계</p>
+<ul>
+<li>주기율표 전체를 균일하게 커버하지 않음</li>
+<li>6-311G는 실제로 TZ 품질이 아님 (Jensen 벤치마크)</li>
+<li>def2 또는 cc-pVXZ 사용 권장</li>
+</ul>
+</div>
+<hr />
+<h2 id="5-xc-functionals-jacobs-ladder">5. XC Functionals — Jacob's Ladder<a class="headerlink" href="#5-xc-functionals-jacobs-ladder" title="Permanent link">&para;</a></h2>
+<p>아래에서 위로 갈수록 정확하지만 비용 증가.</p>
+<h3 id="rung-1-lda-local-density-approximation">Rung 1: LDA (Local Density Approximation)<a class="headerlink" href="#rung-1-lda-local-density-approximation" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Functional</th>
+<th>PySCF</th>
+<th>특징</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SVWN</td>
+<td><code>'lda,vwn'</code></td>
+<td>가장 단순, overbinding ~1 eV, 테스트/솔리드용</td>
+</tr>
+</tbody>
+</table>
+<p><strong>정확도</strong>: MAE ~25+ kcal/mol (GMTKN55). <strong>비용</strong>: ~HF와 동일.</p>
+<h3 id="rung-2-gga-generalized-gradient-approximation">Rung 2: GGA (Generalized Gradient Approximation)<a class="headerlink" href="#rung-2-gga-generalized-gradient-approximation" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Functional</th>
+<th>PySCF</th>
+<th>특징</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>PBE</strong></td>
+<td><code>'pbe'</code></td>
+<td>가장 인기 있는 GGA. 고체 + 일반 화학</td>
+</tr>
+<tr>
+<td>BLYP</td>
+<td><code>'blyp'</code></td>
+<td>유기화학에서 인기</td>
+</tr>
+<tr>
+<td>BP86</td>
+<td><code>'b88,p86'</code></td>
+<td>무기/유기금속</td>
+</tr>
+<tr>
+<td>revPBE</td>
+<td><code>'revpbe'</code></td>
+<td>PBE 개선, 분자용</td>
+</tr>
+</tbody>
+</table>
+<p><strong>정확도</strong>: MAE ~8-10 kcal/mol. <strong>비용</strong>: ~HF와 동일.</p>
+<div class="admonition tip">
+<p class="admonition-title">PBE의 PySCF 표기</p>
+<p><code>'pbe'</code>, <code>'pbe,pbe'</code>, <code>'PBE'</code> 모두 동일하게 작동.
+QHFlow2 코드에서 <code>'pbe, pbe'</code> (공백 포함)도 사용되는데, PySCF가 이를 올바르게 파싱합니다.</p>
+</div>
+<h3 id="rung-3-meta-gga">Rung 3: meta-GGA<a class="headerlink" href="#rung-3-meta-gga" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Functional</th>
+<th>PySCF</th>
+<th>특징</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TPSS</td>
+<td><code>'tpss'</code></td>
+<td>비경험적 meta-GGA</td>
+</tr>
+<tr>
+<td><strong>SCAN</strong></td>
+<td><code>'scan'</code></td>
+<td>17개 제약 조건 만족. 다양한 화학에 강함</td>
+</tr>
+<tr>
+<td>r²SCAN</td>
+<td><code>'r2scan'</code></td>
+<td>SCAN의 수치적 안정화 버전</td>
+</tr>
+<tr>
+<td>M06-L</td>
+<td><code>'m06l'</code></td>
+<td>유기금속에 적합</td>
+</tr>
+</tbody>
+</table>
+<p><strong>정확도</strong>: MAE ~5-7 kcal/mol. <strong>비용</strong>: ~1.5x GGA.</p>
+<h3 id="rung-4-hybrid-functionals">Rung 4: Hybrid Functionals<a class="headerlink" href="#rung-4-hybrid-functionals" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Functional</th>
+<th>PySCF</th>
+<th style="text-align: center;">HF Exchange</th>
+<th>특징</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>B3LYP</strong></td>
+<td><code>'b3lyp'</code></td>
+<td style="text-align: center;">20%</td>
+<td>가장 널리 사용. <strong>QH9/QHFlow 표준</strong></td>
+</tr>
+<tr>
+<td>PBE0</td>
+<td><code>'pbe0'</code></td>
+<td style="text-align: center;">25%</td>
+<td>비경험적 hybrid</td>
+</tr>
+<tr>
+<td>M06-2X</td>
+<td><code>'m062x'</code></td>
+<td style="text-align: center;">54%</td>
+<td>열화학 + 비공유 상호작용</td>
+</tr>
+<tr>
+<td><strong>ωB97X-V</strong></td>
+<td><code>'wb97x_v'</code></td>
+<td style="text-align: center;">RSH</td>
+<td>상위권 range-separated + VV10 NLC</td>
+</tr>
+<tr>
+<td>ωB97M-V</td>
+<td><code>'wb97m_v'</code></td>
+<td style="text-align: center;">RSH meta</td>
+<td>최고 수준 범용 functional</td>
+</tr>
+<tr>
+<td>HSE06</td>
+<td><code>'hse06'</code></td>
+<td style="text-align: center;">25% (SR)</td>
+<td>고체용 screened hybrid</td>
+</tr>
+<tr>
+<td>CAM-B3LYP</td>
+<td><code>'camb3lyp'</code></td>
+<td style="text-align: center;">19-65% RSH</td>
+<td>전하이동 여기 상태</td>
+</tr>
+</tbody>
+</table>
+<p><strong>정확도</strong>: MAE ~3-5 kcal/mol. <strong>비용</strong>: ~3-10x GGA (HF exchange 때문).</p>
+<div class="admonition warning">
+<p class="admonition-title">B3LYP 단독 사용의 한계</p>
+<p>B3LYP은 <strong>분산력 (dispersion)을 기술하지 못합니다</strong>.
+D3(BJ) 보정 없는 B3LYP은 비공유 상호작용에서 크게 빗나감.
+B3LYP-D3 &gt; B3LYP (GMTKN55에서 ~2 kcal/mol 차이).
+QH9 데이터셋은 B3LYP without D3로 생성되었음 — 분산력이 중요한 시스템에서 한계.</p>
+</div>
+<h3 id="rung-5-double-hybrid">Rung 5: Double-Hybrid<a class="headerlink" href="#rung-5-double-hybrid" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Functional</th>
+<th>PySCF</th>
+<th>특징</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B2PLYP</td>
+<td><code>'b2plyp'</code></td>
+<td>HF exchange + MP2 correlation</td>
+</tr>
+<tr>
+<td>DSD-BLYP-D3</td>
+<td>(custom)</td>
+<td>GMTKN55 1위</td>
+</tr>
+</tbody>
+</table>
+<p><strong>정확도</strong>: MAE ~1-2 kcal/mol (최고). <strong>비용</strong>: ~50-100x GGA (MP2 필요).</p>
+<h3 id="gmtkn55-wtmad-2-kcalmol">GMTKN55 벤치마크 순위 (WTMAD-2, kcal/mol)<a class="headerlink" href="#gmtkn55-wtmad-2-kcalmol" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a> 1. DSD-BLYP-D3(BJ)   ~3.1  ██░░░░░░░░  (double hybrid)
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a> 2. ωB97M-V            ~4.0  ███░░░░░░░  (RSH meta-GGA hybrid)
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a> 3. ωB97X-V            ~4.4  ███░░░░░░░  (RSH hybrid)
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a> 4. PW6B95-D3          ~4.7  ████░░░░░░  (hybrid)
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a> 5. M06-2X             ~5.2  ████░░░░░░  (hybrid)
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a> 6. PBE0-D3            ~6.0  █████░░░░░  (hybrid)
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a> 7. B3LYP-D3           ~6.5  █████░░░░░  (hybrid) ← QH9 functional (without D3)
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a> 8. SCAN               ~7.5  ██████░░░░  (meta-GGA)
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a> 9. PBE                ~9.5  ████████░░  (GGA) ← MD17 ref ham functional
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>10. LDA               ~25+  ██████████  (LDA)
+</code></pre></div>
+<hr />
+<h2 id="6-density-fitting-ri">6. Density Fitting (RI 근사)<a class="headerlink" href="#6-density-fitting-ri" title="Permanent link">&para;</a></h2>
+<p>4-center 적분을 보조 basis로 분해하여 $O(N^4) \to O(N^3)$ 가속. 오차 ~0.01 kcal/mol.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">mf</span> <span class="o">=</span> <span class="n">dft</span><span class="o">.</span><span class="n">RKS</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span><span class="o">.</span><span class="n">density_fit</span><span class="p">()</span>  <span class="c1"># 보조 basis 자동 선택</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>주 Basis</th>
+<th style="text-align: center;">보조 Basis (JK)</th>
+<th style="text-align: center;">보조 Basis (RI/MP2)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>def2-SVP</td>
+<td style="text-align: center;"><code>def2-svp-jkfit</code></td>
+<td style="text-align: center;"><code>def2-svp-ri</code></td>
+</tr>
+<tr>
+<td>def2-TZVP</td>
+<td style="text-align: center;"><code>def2-tzvp-jkfit</code></td>
+<td style="text-align: center;"><code>def2-tzvp-ri</code></td>
+</tr>
+<tr>
+<td>cc-pVDZ</td>
+<td style="text-align: center;"><code>cc-pvdz-jkfit</code></td>
+<td style="text-align: center;"><code>cc-pvdz-ri</code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Hamiltonian ML에서의 DF</p>
+<p>Density fitting은 <strong>Hamiltonian 행렬의 차원을 바꾸지 않습니다</strong>.
+SCF 수렴 속도만 개선. 하지만 수치적 결과가 미세하게 달라질 수 있으므로
+metadata에 DF 사용 여부를 기록해야 합니다.</p>
+</div>
+<hr />
+<h2 id="7-hamiltonian-ml">7. Hamiltonian ML 논문에서의 선택<a class="headerlink" href="#7-hamiltonian-ml" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>논문/데이터셋</th>
+<th>Basis</th>
+<th>Functional</th>
+<th>대상</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>QH9 / QHNet</strong></td>
+<td>def2-SVP</td>
+<td>B3LYP</td>
+<td>QM9 (H/C/N/O/F)</td>
+</tr>
+<tr>
+<td><strong>QHFlow / QHFlow2</strong></td>
+<td>def2-SVP</td>
+<td>B3LYP (QH9) / PBE (MD17)</td>
+<td>QM9 / MD17</td>
+</tr>
+<tr>
+<td><strong>SLEM</strong></td>
+<td>def2-SVP</td>
+<td>B3LYP</td>
+<td>QM9</td>
+</tr>
+<tr>
+<td><strong>DeepH</strong></td>
+<td>NAO (수치 기저)</td>
+<td>PBE</td>
+<td>결정 고체</td>
+</tr>
+<tr>
+<td><strong>PhiSNet</strong></td>
+<td>def2-SVP</td>
+<td>ωB97X / B3LYP</td>
+<td>MD17/QM9</td>
+</tr>
+<tr>
+<td><strong>SchNOrb</strong></td>
+<td>def2-SVP</td>
+<td>PBE</td>
+<td>ethanol 등</td>
+</tr>
+</tbody>
+</table>
+<p><strong>사실상의 표준</strong>: <code>def2-SVP + B3LYP</code> (분자), <code>NAO + PBE</code> (고체)</p>
+<hr />
+<h2 id="8">8. 실용 권장 사항<a class="headerlink" href="#8" title="Permanent link">&para;</a></h2>
+<h3 id="_2">데이터 생성용 (기존 문헌 호환)<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;def2-svp&#39;</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">mf</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s1">&#39;b3lyp&#39;</span>        <span class="c1"># QH9 호환</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># 또는</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">mf</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s1">&#39;pbe&#39;</span>           <span class="c1"># MD17/SchNOrb 호환</span>
+</code></pre></div>
+<h3 id="_3">고정밀 참조 데이터 생성용<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;def2-tzvp&#39;</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">mf</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s1">&#39;wb97x_v&#39;</span>       <span class="c1"># 상위권 RSH, NLC 포함</span>
+</code></pre></div>
+<h3 id="_4">프로토타이핑/디버깅용<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">mol</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="s1">&#39;sto-3g&#39;</span>     <span class="c1"># 최소 basis, 파이프라인 테스트</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">mf</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="s1">&#39;pbe&#39;</span>            <span class="c1"># 빠른 GGA</span>
+</code></pre></div>
+<h3 id="basis">Basis 선택 의사결정 트리<a class="headerlink" href="#basis" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>목표가 뭔가?
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>├── 기존 QH9/QHFlow 벤치마크 재현 → def2-SVP + B3LYP
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>├── 더 정확한 reference 생성     → def2-TZVP + ωB97X-V
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>├── 고체/주기계                  → NAO + PBE (+ HSE06)
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>├── 분산력 중요 (약한 상호작용)   → def2-SVP + B3LYP-D3(BJ)
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>├── 무거운 원소 (5d 이상)        → def2-TZVP + ECP
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>└── 코드 테스트                  → STO-3G + PBE
+</code></pre></div>
+<hr />
+<h2 id="_5">참고 자료<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://pyscf.org/user/gto.html">PySCF Basis Sets</a></li>
+<li><a href="https://pyscf.org/user/dft.html">PySCF DFT Functionals</a></li>
+<li><a href="https://www.basissetexchange.org/">Basis Set Exchange</a></li>
+<li><a href="https://doi.org/10.1039/b508541a">Weigend &amp; Ahlrichs, def2 basis sets (PCCP, 2005)</a></li>
+<li><a href="https://doi.org/10.1039/C7CP04913G">Goerigk et al., GMTKN55 benchmark (PCCP, 2017)</a></li>
+<li><a href="https://arxiv.org/abs/2306.09549">QH9 dataset paper (NeurIPS, 2023)</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  맨위로
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\ud074\ub9bd\ubcf4\ub4dc\uc5d0 \ubcf5\uc0ac\ub428", "clipboard.copy": "\ud074\ub9bd\ubcf4\ub4dc\ub85c \ubcf5\uc0ac", "search.result.more.one": "\uc774 \ubb38\uc11c\uc5d0\uc11c 1\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.more.other": "\uc774 \ubb38\uc11c\uc5d0\uc11c #\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.none": "\uac80\uc0c9\uc5b4\uc640 \uc77c\uce58\ud558\ub294 \ubb38\uc11c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4", "search.result.one": "1\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.other": "#\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.placeholder": "\uac80\uc0c9\uc5b4\ub97c \uc785\ub825\ud558\uc138\uc694", "search.result.term.missing": "\ud3ec\ud568\ub418\uc9c0 \uc54a\uc740 \uac80\uc0c9\uc5b4", "select.version": "\ubc84\uc804 \uc120\ud0dd"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -140,4 +140,5 @@ projects/<name>/
 aliases, functions, 패키지 목록, 서버 세팅 상세 등은 아래를 참조:
 - Shell aliases/functions → `profile/bashrc.d/` 파일들 직접 확인
 - 서버 세팅 & 팁 → `profile/Claude Tips/` (mkdocs 문서)
+- 논문/발표용 Plot 가이드 → `profile/Claude Tips/04_plotting_style_guide.md`
 - 패키지 설치 스크립트 → `profile/install.sh`

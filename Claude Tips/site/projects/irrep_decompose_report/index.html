@@ -1,0 +1,2026 @@
+
+<!doctype html>
+<html lang="ko" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="NCloud ML Server 운영 팁 모음">
+      
+      
+      
+      
+        <link rel="prev" href="../dft_matrix_template/">
+      
+      
+        <link rel="next" href="../pyscf_basis_and_functionals/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+    
+    
+      
+        <title>Irrep Decomposition Report - Claude Tips</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#equivariant-irrep-decomposition-of-hamiltonian-matrix-blocks" class="md-skip">
+          콘텐츠로 이동
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="상단/헤더">
+    <a href="../.." title="Claude Tips" class="md-header__button md-logo" aria-label="Claude Tips" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Claude Tips
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Irrep Decomposition Report
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="라이트 모드로 전환"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="라이트 모드로 전환" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="다크 모드로 전환"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="다크 모드로 전환" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="검색" placeholder="검색" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="검색">
+        
+        <button type="reset" class="md-search__icon md-icon" title="지우기" aria-label="지우기" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            검색 초기화
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="네비게이션" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Claude Tips" class="md-nav__button md-logo" aria-label="Claude Tips" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Claude Tips
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    General
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    General
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Server
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Server
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../server/http_proxy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Proxy (브라우저 접근)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../server/http_server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Server 실행
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../server/gpu_test/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU 테스트
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Python
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/persistent_conda/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Persistent Conda
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/conda_uv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conda + uv
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python/plot_style_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plot Style Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/directory_structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    디렉토리 구조
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/dft_metadata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DFT Metadata Template
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    (프로젝트별 팁은 여기에 추가)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pyscf_e3nn_convention/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PySCF vs e3nn Convention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dft_matrix_template/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DFT Matrix Template
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Irrep Decomposition Report
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Irrep Decomposition Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="목차">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      목차
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 동기
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 동기">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        왜 필요한가
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 수학적 배경
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 수학적 배경">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-tensor-product-decomposition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Tensor Product Decomposition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-flatten-reconstruct" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Flatten과 Reconstruct
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-equivariance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Equivariance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-normalization-equivariant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Normalization이 Equivariant한 이유
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 알고리즘 구현
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 알고리즘 구현">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-cg-casimir-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 CG 행렬 계산 (Casimir Method)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 코드
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 지원 범위
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 실험 결과
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 실험 결과">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-roundtrip" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Roundtrip (완전성)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-norm-preservation-parseval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Norm Preservation (Parseval)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-rotation-equivariance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Rotation Equivariance (핵심 결과)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-irrep-norm-invariance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Irrep Norm Invariance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-negative-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 Negative Control
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-p-d-block" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 p-d Block 예시 (구체적 수치)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-equivariant-normalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Equivariant Normalization에의 적용
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Equivariant Normalization에의 적용">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-slem-style-per-irrep-normalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 SLEM-style Per-Irrep Normalization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-equivariant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 왜 Equivariant한가
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 기대 효과
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 파일 위치
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 참고 문헌
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pyscf_basis_and_functionals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PySCF Basis & Functionals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="목차">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      목차
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 동기
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 동기">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        왜 필요한가
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 수학적 배경
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 수학적 배경">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-tensor-product-decomposition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Tensor Product Decomposition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-flatten-reconstruct" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Flatten과 Reconstruct
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-equivariance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Equivariance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-normalization-equivariant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Normalization이 Equivariant한 이유
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 알고리즘 구현
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 알고리즘 구현">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-cg-casimir-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 CG 행렬 계산 (Casimir Method)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 코드
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 지원 범위
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 실험 결과
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 실험 결과">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-roundtrip" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Roundtrip (완전성)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-norm-preservation-parseval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Norm Preservation (Parseval)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-rotation-equivariance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Rotation Equivariance (핵심 결과)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-irrep-norm-invariance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Irrep Norm Invariance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-negative-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 Negative Control
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-p-d-block" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 p-d Block 예시 (구체적 수치)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-equivariant-normalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Equivariant Normalization에의 적용
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Equivariant Normalization에의 적용">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-slem-style-per-irrep-normalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 SLEM-style Per-Irrep Normalization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-equivariant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 왜 Equivariant한가
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 기대 효과
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 파일 위치
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 참고 문헌
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="equivariant-irrep-decomposition-of-hamiltonian-matrix-blocks">Equivariant Irrep Decomposition of Hamiltonian Matrix Blocks<a class="headerlink" href="#equivariant-irrep-decomposition-of-hamiltonian-matrix-blocks" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 동기<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p>DFT Hamiltonian 행렬의 orbital 블록 $H^{l_1, l_2} \in \mathbb{R}^{(2l_1+1) \times (2l_2+1)}$은 단순한 feature vector가 아니라, 양쪽에서 Wigner-D로 변환되는 <strong>tensor product representation</strong>입니다:</p>
+<p>$$H' = D^{l_1}(R) \, H \, D^{l_2}(R)^T$$</p>
+<p>이 구조를 irreducible representation (irrep) 계수로 분해하고 복원하는 알고리즘을 구현하고, 이 과정이 rotation equivariant함을 수치적으로 증명했습니다.</p>
+<h3 id="_1">왜 필요한가<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Equivariant normalization</strong>: per-irrep 통계($\mu$, $\sigma$)로 normalize하면 equivariance 보존</li>
+<li><strong>불균형 해소</strong>: s-s 블록(~20 Ha)과 d-d 블록(~0.01 Ha)의 magnitude 차이를 irrep 단위로 처리</li>
+<li><strong>Flow matching</strong>: prior와 target의 scale을 irrep별로 맞추면 flow path가 균일</li>
+<li><strong>Physical interpretability</strong>: 각 irrep $L$ 성분이 특정 물리적 의미를 가짐 (L=0: isotropic, L=2: quadrupolar 등)</li>
+</ol>
+<hr />
+<h2 id="2">2. 수학적 배경<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<h3 id="21-tensor-product-decomposition">2.1 Tensor Product Decomposition<a class="headerlink" href="#21-tensor-product-decomposition" title="Permanent link">&para;</a></h3>
+<p>$(2l_1+1) \times (2l_2+1)$ 행렬은 $l_1 \otimes l_2$ tensor product 공간에 살고 있으며, Clebsch-Gordan (CG) 분해에 의해 irrep들로 분해됩니다:</p>
+<p>$$l_1 \otimes l_2 = \bigoplus_{L=|l_1-l_2|}^{l_1+l_2} L$$</p>
+<p>CG 행렬 $C$는 이 분해를 실현하는 orthogonal change-of-basis 행렬입니다:</p>
+<p>$$C^T (D^{l_1} \otimes D^{l_2}) C = \bigoplus_L D^L$$</p>
+<h3 id="22-flatten-reconstruct">2.2 Flatten과 Reconstruct<a class="headerlink" href="#22-flatten-reconstruct" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Flatten</strong>: $\vec{h} = C^T \text{vec}(H)$, 여기서 $\vec{h}$를 $L$별로 분할하면 ${h^L \in \mathbb{R}^{2L+1}}$</li>
+<li><strong>Reconstruct</strong>: $\text{vec}(H) = C \vec{h}$</li>
+</ul>
+<h3 id="23-equivariance">2.3 Equivariance<a class="headerlink" href="#23-equivariance" title="Permanent link">&para;</a></h3>
+<p>행렬 공간에서의 회전 $H' = D^{l_1} H D^{l_2,T}$는 irrep 공간에서 <strong>각 irrep의 독립적인 회전</strong>에 대응합니다:</p>
+<p>$$h'^L = D^L(R) \, h^L$$</p>
+<p>이것이 equivariance입니다: flatten과 rotation이 교환(commute)합니다.</p>
+<h3 id="24-normalization-equivariant">2.4 Normalization이 Equivariant한 이유<a class="headerlink" href="#24-normalization-equivariant" title="Permanent link">&para;</a></h3>
+<p>$|h^L|$은 rotation invariant ($|D^L h^L| = |h^L|$, $D^L$이 orthogonal이므로).
+따라서:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">연산</th>
+<th style="text-align: center;">L=0 (scalar)</th>
+<th style="text-align: center;">L&gt;0 (non-scalar)</th>
+<th style="text-align: center;">Equivariant?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$h^L / \sigma$ (invariant scalar로 나누기)</td>
+<td style="text-align: center;">O</td>
+<td style="text-align: center;">O</td>
+<td style="text-align: center;"><strong>보존</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">$h^L - \mu$ (shift)</td>
+<td style="text-align: center;">O</td>
+<td style="text-align: center;"><strong>X</strong></td>
+<td style="text-align: center;">L=0만 가능</td>
+</tr>
+<tr>
+<td style="text-align: center;">$h^L - \mu \cdot \delta_{L,0}$ (L=0에만 shift)</td>
+<td style="text-align: center;">O</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><strong>보존</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3">3. 알고리즘 구현<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<h3 id="31-cg-casimir-method">3.1 CG 행렬 계산 (Casimir Method)<a class="headerlink" href="#31-cg-casimir-method" title="Permanent link">&para;</a></h3>
+<p>독립적으로 $D^L$을 계산하면 basis mismatch 문제가 발생합니다. 이를 방지하기 위해 $D^L$을 CG 행렬로부터 <strong>추출</strong>합니다.</p>
+<p><strong>방법</strong>:</p>
+<ol>
+<li>Real spherical harmonic basis에서 angular momentum generator $G_x, G_y, G_z$ 구성</li>
+<li>Product basis에서 total Casimir $G^2 = G_x^2 + G_y^2 + G_z^2$ 계산</li>
+<li>$-G^2$의 eigenvalues = $L(L+1)$ → 각 $L$의 부분공간 식별</li>
+<li>Eigenvectors를 $L$별로 묶으면 CG 행렬 $C$의 columns</li>
+</ol>
+<p><strong>핵심</strong>: $D^L$은 $C_L^T (D^{l_1} \otimes D^{l_2}) C_L$로 추출. 독립 계산 없이 basis consistency 보장.</p>
+<h3 id="32">3.2 코드<a class="headerlink" href="#32" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">common.irrep_decompose</span><span class="w"> </span><span class="kn">import</span> <span class="n">IrrepDecomposer</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># d-d 블록 (l1=2, l2=2)</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">dec</span> <span class="o">=</span> <span class="n">IrrepDecomposer</span><span class="p">(</span><span class="n">l1</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># → (5×5) → L=0 (1) + L=1 (3) + L=2 (5) + L=3 (7) + L=4 (9) = 25 components</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Flatten: 행렬 → irrep 계수</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">coeffs</span> <span class="o">=</span> <span class="n">dec</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>   <span class="c1"># {0: (1,), 1: (3,), 2: (5,), 3: (7,), 4: (9,)}</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># Reconstruct: irrep 계수 → 행렬</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">H_rec</span> <span class="o">=</span> <span class="n">dec</span><span class="o">.</span><span class="n">reconstruct</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span>   <span class="c1"># (5, 5), 완벽 복원</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># Batched</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">coeffs_batch</span> <span class="o">=</span> <span class="n">dec</span><span class="o">.</span><span class="n">flatten_batch</span><span class="p">(</span><span class="n">H_batch</span><span class="p">)</span>      <span class="c1"># {L: (B, 2L+1)}</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">H_batch_rec</span> <span class="o">=</span> <span class="n">dec</span><span class="o">.</span><span class="n">reconstruct_batch</span><span class="p">(</span><span class="n">coeffs_batch</span><span class="p">)</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="c1"># Irrep 공간에서 회전</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="n">coeffs_rot</span> <span class="o">=</span> <span class="n">dec</span><span class="o">.</span><span class="n">rotate_irreps</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="c1"># Irrep norms (rotation invariant)</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="n">norms</span> <span class="o">=</span> <span class="n">dec</span><span class="o">.</span><span class="n">irrep_norms</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span>   <span class="c1"># {L: scalar}</span>
+</code></pre></div>
+<h3 id="33">3.3 지원 범위<a class="headerlink" href="#33" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">l</th>
+<th>Orbital</th>
+<th style="text-align: center;">테스트</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td>s</td>
+<td style="text-align: center;">PASS</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td>p</td>
+<td style="text-align: center;">PASS</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td>d</td>
+<td style="text-align: center;">PASS</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td>f</td>
+<td style="text-align: center;">PASS</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td>g</td>
+<td style="text-align: center;">PASS</td>
+</tr>
+</tbody>
+</table>
+<p>모든 $(l_1, l_2)$ 조합 15쌍 검증 완료.</p>
+<hr />
+<h2 id="4">4. 실험 결과<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<h3 id="41-roundtrip">4.1 Roundtrip (완전성)<a class="headerlink" href="#41-roundtrip" title="Permanent link">&para;</a></h3>
+<p>$$\text{reconstruct}(\text{flatten}(H)) = H$$</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">(l1, l2)</th>
+<th style="text-align: center;">Max Error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">(0,0) s-s</td>
+<td style="text-align: center;">0.0e+00</td>
+</tr>
+<tr>
+<td style="text-align: center;">(0,1) s-p</td>
+<td style="text-align: center;">0.0e+00</td>
+</tr>
+<tr>
+<td style="text-align: center;">(1,1) p-p</td>
+<td style="text-align: center;">1.6e-15</td>
+</tr>
+<tr>
+<td style="text-align: center;">(1,2) p-d</td>
+<td style="text-align: center;">2.0e-15</td>
+</tr>
+<tr>
+<td style="text-align: center;">(2,2) d-d</td>
+<td style="text-align: center;">3.1e-15</td>
+</tr>
+<tr>
+<td style="text-align: center;">(2,3) d-f</td>
+<td style="text-align: center;">3.0e-15</td>
+</tr>
+<tr>
+<td style="text-align: center;">(3,3) f-f</td>
+<td style="text-align: center;">3.1e-15</td>
+</tr>
+<tr>
+<td style="text-align: center;">(3,4) f-g</td>
+<td style="text-align: center;">3.6e-15</td>
+</tr>
+<tr>
+<td style="text-align: center;">(4,4) g-g</td>
+<td style="text-align: center;">3.9e-15</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-norm-preservation-parseval">4.2 Norm Preservation (Parseval)<a class="headerlink" href="#42-norm-preservation-parseval" title="Permanent link">&para;</a></h3>
+<p>$$|H|_F^2 = \sum_L |h^L|^2$$</p>
+<p>모든 pair에서 ~1e-14 이하 오차. CG 행렬이 orthogonal이므로 수학적으로 정확.</p>
+<h3 id="43-rotation-equivariance">4.3 Rotation Equivariance (핵심 결과)<a class="headerlink" href="#43-rotation-equivariance" title="Permanent link">&para;</a></h3>
+<p>$$\text{flatten}(D^{l_1} H D^{l_2,T}) = D^L \cdot \text{flatten}(H) \quad \forall L$$</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">(l1, l2)</th>
+<th style="text-align: center;">Max Error</th>
+<th style="text-align: center;">Rotations</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">(0,0) s-s</td>
+<td style="text-align: center;">0.0e+00</td>
+<td style="text-align: center;">20</td>
+</tr>
+<tr>
+<td style="text-align: center;">(0,1) s-p</td>
+<td style="text-align: center;">0.0e+00</td>
+<td style="text-align: center;">20</td>
+</tr>
+<tr>
+<td style="text-align: center;">(1,1) p-p</td>
+<td style="text-align: center;">2.2e-15</td>
+<td style="text-align: center;">20</td>
+</tr>
+<tr>
+<td style="text-align: center;">(1,2) p-d</td>
+<td style="text-align: center;">2.7e-15</td>
+<td style="text-align: center;">20</td>
+</tr>
+<tr>
+<td style="text-align: center;">(2,2) d-d</td>
+<td style="text-align: center;">8.4e-15</td>
+<td style="text-align: center;">20</td>
+</tr>
+<tr>
+<td style="text-align: center;">(2,3) d-f</td>
+<td style="text-align: center;">6.4e-15</td>
+<td style="text-align: center;">20</td>
+</tr>
+<tr>
+<td style="text-align: center;">(3,3) f-f</td>
+<td style="text-align: center;">1.2e-14</td>
+<td style="text-align: center;">20</td>
+</tr>
+<tr>
+<td style="text-align: center;">(3,4) f-g</td>
+<td style="text-align: center;">1.5e-14</td>
+<td style="text-align: center;">20</td>
+</tr>
+<tr>
+<td style="text-align: center;">(4,4) g-g</td>
+<td style="text-align: center;">1.9e-14</td>
+<td style="text-align: center;">20</td>
+</tr>
+</tbody>
+</table>
+<p>모든 오차가 machine precision (~1e-14) 이내. <strong>Equivariance 수치적으로 증명됨.</strong></p>
+<h3 id="44-irrep-norm-invariance">4.4 Irrep Norm Invariance<a class="headerlink" href="#44-irrep-norm-invariance" title="Permanent link">&para;</a></h3>
+<p>$$|h^L(R \cdot H)| = |h^L(H)| \quad \forall R \in SO(3)$$</p>
+<p>20개 랜덤 회전에서 모든 $(l_1, l_2, L)$에 대해 ~1e-14 이내 일치. Per-irrep normalization의 근거.</p>
+<h3 id="45-negative-control">4.5 Negative Control<a class="headerlink" href="#45-negative-control" title="Permanent link">&para;</a></h3>
+<p>CG가 아닌 랜덤 orthogonal basis로 per-component scaling → <strong>equivariance 깨짐</strong> (error ~1.0). CG 분해가 유일하게 올바른 방법임을 확인.</p>
+<h3 id="46-p-d-block">4.6 p-d Block 예시 (구체적 수치)<a class="headerlink" href="#46-p-d-block" title="Permanent link">&para;</a></h3>
+<p>$l_1=1, l_2=2$ (p-d block, 3×5 → L=1,2,3):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Path A: H → flatten → {h^L} → D^L · h^L    (irrep에서 회전)
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Path B: H → D^1 H D^{2,T} → flatten → {h&#39;^L}  (행렬에서 회전 후 분해)
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>L=1 (dim=3):
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>  Path A: [0.16989302, 0.91704596, 0.61645356]
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>  Path B: [0.16989302, 0.91704596, 0.61645356]
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>  max |A-B| = 3.00e-15  ✓
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>L=2 (dim=5):
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>  Path A: [0.35274557, -0.81913231, 0.45726456, ...]
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>  Path B: [0.35274557, -0.81913231, 0.45726456, ...]
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>  max |A-B| = 1.33e-15  ✓
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>L=3 (dim=7):
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>  Path A: [1.35179661, -0.05732191, 0.50147159, ...]
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>  Path B: [1.35179661, -0.05732191, 0.50147159, ...]
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>  max |A-B| = 1.33e-15  ✓
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>Irrep norms (before/after rotation):
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>  L=1: 1.117968 / 1.117968  (diff=6.66e-16)  ✓
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>  L=2: 1.650026 / 1.650026  (diff=0.00e+00)  ✓
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>  L=3: 1.742066 / 1.742066  (diff=2.22e-16)  ✓
+</code></pre></div>
+<hr />
+<h2 id="5-equivariant-normalization">5. Equivariant Normalization에의 적용<a class="headerlink" href="#5-equivariant-normalization" title="Permanent link">&para;</a></h2>
+<h3 id="51-slem-style-per-irrep-normalization">5.1 SLEM-style Per-Irrep Normalization<a class="headerlink" href="#51-slem-style-per-irrep-normalization" title="Permanent link">&para;</a></h3>
+<p>Training set에서 $(Z_i, Z_j, l_1, l_2, L)$ 단위로 통계를 계산:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Training set에서 per-(l1, l2, L) 통계 수집</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">for</span> <span class="n">H_block</span> <span class="ow">in</span> <span class="n">training_blocks</span><span class="p">:</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">coeffs</span> <span class="o">=</span> <span class="n">dec</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">H_block</span><span class="p">)</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="k">for</span> <span class="n">L</span><span class="p">,</span> <span class="n">h_L</span> <span class="ow">in</span> <span class="n">coeffs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        <span class="n">stats</span><span class="p">[</span><span class="n">L</span><span class="p">][</span><span class="s2">&quot;norms&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h_L</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># σ_L = RMS of norms</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="k">for</span> <span class="n">L</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">sigma_L</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="n">L</span><span class="p">][</span><span class="s2">&quot;norms&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1"># Normalize</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="k">def</span><span class="w"> </span><span class="nf">normalize</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">stats</span><span class="p">):</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="k">return</span> <span class="p">{</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>        <span class="n">L</span><span class="p">:</span> <span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">stats</span><span class="p">[</span><span class="n">L</span><span class="p">]</span><span class="o">.</span><span class="n">mu</span><span class="p">)</span> <span class="o">/</span> <span class="n">stats</span><span class="p">[</span><span class="n">L</span><span class="p">]</span><span class="o">.</span><span class="n">sigma</span> <span class="k">if</span> <span class="n">L</span> <span class="o">==</span> <span class="mi">0</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>           <span class="k">else</span> <span class="n">h</span> <span class="o">/</span> <span class="n">stats</span><span class="p">[</span><span class="n">L</span><span class="p">]</span><span class="o">.</span><span class="n">sigma</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>        <span class="k">for</span> <span class="n">L</span><span class="p">,</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">coeffs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    <span class="p">}</span>
+</code></pre></div>
+<h3 id="52-equivariant">5.2 왜 Equivariant한가<a class="headerlink" href="#52-equivariant" title="Permanent link">&para;</a></h3>
+<ol>
+<li>$\sigma_L$은 $|h^L|$의 RMS → rotation invariant → invariant scalar로 나누기 → equivariant</li>
+<li>$\mu$는 L=0 (scalar)에만 적용 → L=0는 rotation에 불변 → shift 안전</li>
+<li>L&gt;0에는 shift 없음 → preferred direction 도입하지 않음</li>
+</ol>
+<h3 id="53">5.3 기대 효과<a class="headerlink" href="#53" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>측면</th>
+<th>현재 (raw MSE)</th>
+<th>Per-irrep normalization 후</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gradient balance</td>
+<td>s-s가 지배</td>
+<td>모든 블록 ~O(1)</td>
+</tr>
+<tr>
+<td>Flow matching</td>
+<td>prior-target scale 불일치</td>
+<td>균일한 flow path</td>
+</tr>
+<tr>
+<td>학습 안정성</td>
+<td>lr 선택 어려움</td>
+<td>등방적 loss landscape</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6">6. 파일 위치<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>파일</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>QHFlow2/src/common/irrep_decompose.py</code></td>
+<td><code>IrrepDecomposer</code> 클래스</td>
+</tr>
+<tr>
+<td><code>QHFlow2/tests/test_irrep_decompose.py</code></td>
+<td>8개 테스트 (equivariance 증명 포함)</td>
+</tr>
+<tr>
+<td><code>QHFlow2/tests/test_equivariant_normalization.py</code></td>
+<td>Normalization equivariance 검증</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7">7. 참고 문헌<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>SLEM</strong>: Zhu et al., "Learning Local Equivariant Representations for Quantum Operators", ICLR 2025. <a href="https://arxiv.org/abs/2407.06053">arXiv:2407.06053</a></li>
+<li><strong>MACE-H</strong>: "Equivariant Electronic Hamiltonian Prediction with Many-Body Message Passing", 2025. <a href="https://arxiv.org/abs/2508.15108">arXiv:2508.15108</a></li>
+<li><strong>EquiformerV2</strong>: Liao et al., "EquiformerV2: Improved Equivariant Transformer", ICLR 2024.</li>
+<li><strong>Delta Project</strong>: Lejaeghere et al., Science 351, 2016.</li>
+<li><strong>QHFlow</strong>: Kim et al., "High-order Equivariant Flow Matching for DFT Hamiltonian Prediction", NeurIPS 2025 Spotlight.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  맨위로
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\ud074\ub9bd\ubcf4\ub4dc\uc5d0 \ubcf5\uc0ac\ub428", "clipboard.copy": "\ud074\ub9bd\ubcf4\ub4dc\ub85c \ubcf5\uc0ac", "search.result.more.one": "\uc774 \ubb38\uc11c\uc5d0\uc11c 1\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.more.other": "\uc774 \ubb38\uc11c\uc5d0\uc11c #\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.none": "\uac80\uc0c9\uc5b4\uc640 \uc77c\uce58\ud558\ub294 \ubb38\uc11c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4", "search.result.one": "1\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.other": "#\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.placeholder": "\uac80\uc0c9\uc5b4\ub97c \uc785\ub825\ud558\uc138\uc694", "search.result.term.missing": "\ud3ec\ud568\ub418\uc9c0 \uc54a\uc740 \uac80\uc0c9\uc5b4", "select.version": "\ubc84\uc804 \uc120\ud0dd"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

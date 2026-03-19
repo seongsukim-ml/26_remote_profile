@@ -14,6 +14,8 @@
         <link rel="prev" href="../">
       
       
+        <link rel="next" href="../dft_matrix_template/">
+      
       
         
       
@@ -898,6 +900,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 근본 원인
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -907,19 +920,19 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        실험으로 확인된 사실
+        축 일치의 필요성
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="실험으로 확인된 사실">
+    <nav class="md-nav" aria-label="축 일치의 필요성">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#e3nn-y" class="md-nav__link">
+  <a href="#l1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        e3nn 양자화축 = Y축
+        l=1: 축 안 맞춰도 됨 (조건부)
       
     </span>
   </a>
@@ -927,10 +940,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#120" class="md-nav__link">
+  <a href="#l2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        좌표 [:,[1,2,0]] 적용 후
+        l≥2: 반드시 맞춰야 함
       
     </span>
   </a>
@@ -938,10 +951,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#d-orbital-l2" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        d-orbital (l=2)
+        변환을 피할 수 없는 이유
       
     </span>
   </a>
@@ -965,18 +978,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sp-basis" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        s,p만 있는 basis: 변환 완전 제거 가능
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
         성능: 변환 비용과 최적화
@@ -988,10 +990,38 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#permutation-index-gpu-545x" class="md-nav__link">
     <span class="md-ellipsis">
       
-        현재 구현의 문제
+        Permutation index 캐싱으로 GPU 545x 향상
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tensor-expansion-so2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tensor Expansion과 SO(2) 근사
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tensor Expansion과 SO(2) 근사">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cg-expansion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CG Expansion의 구조
       
     </span>
   </a>
@@ -999,10 +1029,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#permutation-index" class="md-nav__link">
+  <a href="#local-frame-off-diagonal" class="md-nav__link">
     <span class="md-ellipsis">
       
-        해결: Permutation index 캐싱
+        Local frame에서 off-diagonal 대각성
       
     </span>
   </a>
@@ -1010,10 +1040,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#so2-expansion" class="md-nav__link">
     <span class="md-ellipsis">
       
-        더 나은 방법: 전처리 시 적용
+        SO(2) Expansion 가능성
       
     </span>
   </a>
@@ -1029,7 +1059,7 @@
   <a href="#qhflow2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        QHFlow2에서의 처리
+        QHFlow2 관련 파일
       
     </span>
   </a>
@@ -1040,6 +1070,90 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dft_matrix_template/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DFT Matrix Template
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../irrep_decompose_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Irrep Decomposition Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pyscf_basis_and_functionals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PySCF Basis & Functionals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1112,6 +1226,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 근본 원인
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1121,19 +1246,19 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        실험으로 확인된 사실
+        축 일치의 필요성
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="실험으로 확인된 사실">
+    <nav class="md-nav" aria-label="축 일치의 필요성">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#e3nn-y" class="md-nav__link">
+  <a href="#l1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        e3nn 양자화축 = Y축
+        l=1: 축 안 맞춰도 됨 (조건부)
       
     </span>
   </a>
@@ -1141,10 +1266,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#120" class="md-nav__link">
+  <a href="#l2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        좌표 [:,[1,2,0]] 적용 후
+        l≥2: 반드시 맞춰야 함
       
     </span>
   </a>
@@ -1152,10 +1277,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#d-orbital-l2" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        d-orbital (l=2)
+        변환을 피할 수 없는 이유
       
     </span>
   </a>
@@ -1179,18 +1304,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sp-basis" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        s,p만 있는 basis: 변환 완전 제거 가능
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
         성능: 변환 비용과 최적화
@@ -1202,10 +1316,38 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#permutation-index-gpu-545x" class="md-nav__link">
     <span class="md-ellipsis">
       
-        현재 구현의 문제
+        Permutation index 캐싱으로 GPU 545x 향상
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tensor-expansion-so2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tensor Expansion과 SO(2) 근사
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tensor Expansion과 SO(2) 근사">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cg-expansion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CG Expansion의 구조
       
     </span>
   </a>
@@ -1213,10 +1355,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#permutation-index" class="md-nav__link">
+  <a href="#local-frame-off-diagonal" class="md-nav__link">
     <span class="md-ellipsis">
       
-        해결: Permutation index 캐싱
+        Local frame에서 off-diagonal 대각성
       
     </span>
   </a>
@@ -1224,10 +1366,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#so2-expansion" class="md-nav__link">
     <span class="md-ellipsis">
       
-        더 나은 방법: 전처리 시 적용
+        SO(2) Expansion 가능성
       
     </span>
   </a>
@@ -1243,7 +1385,7 @@
   <a href="#qhflow2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        QHFlow2에서의 처리
+        QHFlow2 관련 파일
       
     </span>
   </a>
@@ -1318,26 +1460,61 @@ Equivariant 모델로 DFT Hamiltonian을 다룰 때 반드시 이해해야 하�
 </tbody>
 </table>
 <p>좌표를 <code>[:, [1,2,0]]</code>으로 넣으면 e3nn의 양자화축이 Z로 이동 → PySCF와 일치.</p>
-<h2 id="_2">실험으로 확인된 사실<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<h3 id="e3nn-y">e3nn 양자화축 = Y축<a class="headerlink" href="#e3nn-y" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">e3nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">o3</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">vecs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># x, y, z 단위벡터</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">sh</span> <span class="o">=</span> <span class="n">o3</span><span class="o">.</span><span class="n">spherical_harmonics</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">vecs</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normalization</span><span class="o">=</span><span class="s1">&#39;component&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># x-hat → m=-1 활성화 (√3, 0, 0)</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># y-hat → m=0  활성화 (0, √3, 0)  ← 양자화축</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># z-hat → m=+1 활성화 (0, 0, √3)</span>
+<h3 id="3">3. 근본 원인<a class="headerlink" href="#3" title="Permanent link">&para;</a></h3>
+<p>e3nn v0.2.2에서 Euler angle convention을 ZYZ → YXY로 의도적으로 변경.
+결과적으로 l=1 SH 출력이 (x,y,z) 순서가 되어 프로그래밍이 편해짐.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>e3nn: (m=-1, m=0, m=+1) = (x, y, z)  ← 프로그래밍 편의
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>물리: (m=-1, m=0, m=+1) = (y, z, x)  ← L_z 대각화 (1920년대~)
 </code></pre></div>
-<h3 id="120">좌표 <code>[:,[1,2,0]]</code> 적용 후<a class="headerlink" href="#120" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">sh_perm</span> <span class="o">=</span> <span class="n">o3</span><span class="o">.</span><span class="n">spherical_harmonics</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">vecs</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]],</span> <span class="o">...</span><span class="p">)</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c1"># z-hat → m=0 활성화 → 양자화축이 Z로 이동 ✓</span>
-</code></pre></div>
-<h3 id="d-orbital-l2">d-orbital (l=2)<a class="headerlink" href="#d-orbital-l2" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">sh2</span> <span class="o">=</span> <span class="n">o3</span><span class="o">.</span><span class="n">spherical_harmonics</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">vecs</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1"># native:  m=0 최대 방향 = y → dy² (Y축 양자화)</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># [1,2,0]: m=0 최대 방향 = z → dz² (Z축 양자화, PySCF 일치) ✓</span>
-</code></pre></div>
+<p>이 l=1의 선택이 CG 계수를 통해 모든 l≥2에 전파되어
+d_{m=0} = dy² (e3nn) vs dz² (물리학) 차이 발생.</p>
+<h2 id="_2">축 일치의 필요성<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h3 id="l1">l=1: 축 안 맞춰도 됨 (조건부)<a class="headerlink" href="#l1" title="Permanent link">&para;</a></h3>
+<p>l=1의 real SH = Cartesian 좌표 (x,y,z) 자체. 어떤 축이 m=0이든
+물리적 회전은 같은 3×3 R 행렬로 변환됨. <strong>단, d-orbital이 없는 basis에서만</strong>.</p>
+<h3 id="l2">l≥2: 반드시 맞춰야 함<a class="headerlink" href="#l2" title="Permanent link">&para;</a></h3>
+<p>같은 물리적 회전에 대해 D²_Y ≠ D²_Z (||차이|| = 2.83).
+축을 안 맞추면 model output과 target이 다른 Wigner D로 변환되어
+<strong>equivariance 자체가 깨짐</strong> (loss가 회전에 따라 달라짐).</p>
+<h3 id="_3">변환을 피할 수 없는 이유<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>방법</th>
+<th>코드</th>
+<th>오버헤드</th>
+<th>위험도</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>[:,[1,2,0]]</code> (현재)</td>
+<td>0줄</td>
+<td>~0 ms</td>
+<td>없음</td>
+</tr>
+<tr>
+<td>D_block matmul</td>
+<td>~10줄</td>
+<td>+0.12 ms</td>
+<td>낮음</td>
+</tr>
+<tr>
+<td>e3nn 소스 수정</td>
+<td>~100줄</td>
+<td>0 ms</td>
+<td><strong>높음</strong></td>
+</tr>
+<tr>
+<td>e3nn fork</td>
+<td>~100줄</td>
+<td>0 ms</td>
+<td>중간</td>
+</tr>
+</tbody>
+</table>
+<p><strong>결론: <code>[:,[1,2,0]]</code> 한 줄이 최선.</strong> 모든 대안이 이보다 비쌈.
+e3nn의 convention 문제는 커뮤니티 전체가 인지하는 알려진 이슈.</p>
 <h2 id="equivariance">Equivariance는 깨지지 않는다<a class="headerlink" href="#equivariance" title="Permanent link">&para;</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">흔한 오해</p>
@@ -1345,78 +1522,20 @@ Equivariant 모델로 DFT Hamiltonian을 다룰 때 반드시 이해해야 하�
 e3nn은 자체 convention 안에서 항상 equivariant.</p>
 </div>
 <p>실제 문제는 <strong>물리적 대응(correspondence)의 불일치</strong>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>z축 방향 edge (0,0,1)에 대해:
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>✓ [1,2,0] 적용: m=0 활성화 → PySCF의 pz(sigma)와 대응
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>✗ 그대로 입력:  m=+1 활성화 → PySCF의 px와 대응 (잘못된 매칭!)
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>z축 방향 edge (0,0,1)에 대해:
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>✓ [1,2,0] 적용: m=0 활성화 → PySCF의 pz(sigma)와 대응
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>✗ 그대로 입력:  m=+1 활성화 → PySCF의 px와 대응 (잘못된 매칭!)
 </code></pre></div>
-<p>모델이 edge의 SH 성분으로 Hamiltonian p-block을 예측할 때,
-edge와 target의 축 convention이 일치해야 올바른 물리적 대응을 학습한다.</p>
-<p><strong>핵심</strong>: 두 변환 (Hamiltonian <code>[1,2,0]</code> + 좌표 <code>[:,[1,2,0]]</code>)은 <strong>반드시 짝으로</strong> 적용되어야 한다.
-하나만 빠지면 성능 저하. 둘 다 빠지면 아래 조건부로 가능.</p>
-<h2 id="sp-basis">s,p만 있는 basis: 변환 완전 제거 가능<a class="headerlink" href="#sp-basis" title="Permanent link">&para;</a></h2>
-<p>d-orbital이 없는 경우 (e.g., 6-31G):</p>
-<ul>
-<li>e3nn native: (m=-1, m=0, m=+1) = (x, y, z) 방향</li>
-<li>PySCF native: (px, py, pz) = (x, y, z) 방향</li>
-<li><strong>물리적 방향이 이미 일치</strong> → 양쪽 변환 모두 제거 가능, zero-cost</li>
-</ul>
-<p>d-orbital이 있는 경우 (e.g., def2-SVP):</p>
-<ul>
-<li>e3nn native d_{m=0} = dy² ≠ PySCF d_{m=0} = dz²</li>
-<li>좌표 <code>[:,[1,2,0]]</code> 필수 → Hamiltonian p-변환도 함께 필수</li>
-</ul>
-<h2 id="_3">성능: 변환 비용과 최적화<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<h3 id="_4">현재 구현의 문제<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
-<p><code>matrix_transform_single()</code>은 매 호출마다 Python loop로 index를 재계산.
-<strong>GPU에서 특히 치명적</strong> — CUDA kernel launch가 orbital 수만큼 반복.</p>
-<table>
-<thead>
-<tr>
-<th>분자</th>
-<th>현재 (CPU)</th>
-<th>현재 (GPU)</th>
-<th>비고</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>CH4 (34 orb)</td>
-<td>0.18 ms</td>
-<td>0.66 ms</td>
-<td>GPU가 3.7x 느림</td>
-</tr>
-<tr>
-<td>C6H6 (114 orb)</td>
-<td>0.54 ms</td>
-<td>1.91 ms</td>
-<td>GPU가 3.5x 느림</td>
-</tr>
-<tr>
-<td>C60 (840 orb)</td>
-<td>2.95 ms</td>
-<td><strong>12.0 ms</strong></td>
-<td>GPU가 4.1x 느림</td>
-</tr>
-</tbody>
-</table>
-<h3 id="permutation-index">해결: Permutation index 캐싱<a class="headerlink" href="#permutation-index" title="Permanent link">&para;</a></h3>
-<p>atom 조합별로 index를 한 번만 계산하고 재사용:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_transform_index</span><span class="p">(</span><span class="n">atoms_list</span><span class="p">,</span> <span class="n">conv</span><span class="p">):</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;한 번만 계산해서 캐싱&quot;&quot;&quot;</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">orbitals</span><span class="p">,</span> <span class="n">orbitals_order</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="p">[]</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">atoms_list</span><span class="p">:</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>        <span class="n">offset</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbitals_order</span><span class="p">)</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>        <span class="n">orbitals</span> <span class="o">+=</span> <span class="n">conv</span><span class="o">.</span><span class="n">atom_to_orbitals_map</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>        <span class="n">orbitals_order</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">offset</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">conv</span><span class="o">.</span><span class="n">orbital_order_map</span><span class="p">[</span><span class="n">a</span><span class="p">]]</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="n">orbitals</span><span class="p">:</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>        <span class="n">offset</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">indices</span><span class="p">))</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>        <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">conv</span><span class="o">.</span><span class="n">orbital_idx_map</span><span class="p">[</span><span class="n">orb</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">orbitals_order</span><span class="p">])</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="c1"># 사용</span>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="n">cached_idx</span> <span class="o">=</span> <span class="n">build_transform_index</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">conv</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="n">H_transformed</span> <span class="o">=</span> <span class="n">H</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">cached_idx</span><span class="p">,</span> <span class="p">:][</span><span class="o">...</span><span class="p">,</span> <span class="p">:,</span> <span class="n">cached_idx</span><span class="p">]</span>
+<p><strong>핵심</strong>: 좌표 <code>[:,[1,2,0]]</code>과 Hamiltonian <code>[1,2,0]</code> permutation은 <strong>세트</strong>.
+하나만 적용하면 불일치. 둘 다 적용하거나 둘 다 안 하거나.</p>
+<h2 id="_4">성능: 변환 비용과 최적화<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h3 id="permutation-index-gpu-545x">Permutation index 캐싱으로 GPU 545x 향상<a class="headerlink" href="#permutation-index-gpu-545x" title="Permanent link">&para;</a></h3>
+<p>현재 <code>matrix_transform_single()</code>은 매 호출마다 Python loop로 index 재계산.
+GPU에서 CUDA kernel launch가 누적되어 오히려 CPU보다 느림.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># 한 번만 계산</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">cached_idx</span> <span class="o">=</span> <span class="n">build_transform_index</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">conv</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># 매번 사용</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">H_transformed</span> <span class="o">=</span> <span class="n">H</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">cached_idx</span><span class="p">,</span> <span class="p">:][</span><span class="o">...</span><span class="p">,</span> <span class="p">:,</span> <span class="n">cached_idx</span><span class="p">]</span>
 </code></pre></div>
 <table>
 <thead>
@@ -1424,7 +1543,7 @@ edge와 target의 축 convention이 일치해야 올바른 물리적 대응을 �
 <th>분자</th>
 <th>현재 (GPU)</th>
 <th>캐싱 (GPU)</th>
-<th>속도 향상</th>
+<th>향상</th>
 </tr>
 </thead>
 <tbody>
@@ -1432,13 +1551,13 @@ edge와 target의 축 convention이 일치해야 올바른 물리적 대응을 �
 <td>CH4</td>
 <td>0.66 ms</td>
 <td>0.017 ms</td>
-<td><strong>39x</strong></td>
+<td>39x</td>
 </tr>
 <tr>
 <td>C6H6</td>
 <td>1.91 ms</td>
 <td>0.017 ms</td>
-<td><strong>112x</strong></td>
+<td>112x</td>
 </tr>
 <tr>
 <td>C60</td>
@@ -1448,22 +1567,140 @@ edge와 target의 축 convention이 일치해야 올바른 물리적 대응을 �
 </tr>
 </tbody>
 </table>
-<h3 id="_5">더 나은 방법: 전처리 시 적용<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
-<p>데이터셋 저장 시 변환된 행렬을 저장하면 학습 시 비용 = 0.
-좌표 <code>[:,[1,2,0]]</code>만 forward pass에서 적용 (0.015 ms, 무시 가능).</p>
-<h2 id="qhflow2">QHFlow2에서의 처리<a class="headerlink" href="#qhflow2" title="Permanent link">&para;</a></h2>
-<p>현재 올바르게 구현되어 있음:</p>
-<ol>
-<li><strong>Hamiltonian</strong>: <code>orbital_conventions.py</code>에서 p-orbital <code>[1,2,0]</code> permute</li>
-<li><strong>좌표</strong>: 모델에서 <code>o3.spherical_harmonics(..., edge_vec[:, [1,2,0]], ...)</code></li>
-<li><strong>역변환</strong>: <code>back2pyscf</code> convention으로 예측 → PySCF 복원</li>
-</ol>
-<p>관련 파일:</p>
-<ul>
-<li><code>src/common/orbital_conventions.py</code> — convention 정의</li>
-<li><code>src/common/matrix_transforms.py</code> — 변환 엔진</li>
-<li><code>src/models/QHFlow.py</code> — 좌표 permutation 적용</li>
-</ul>
+<h2 id="tensor-expansion-so2">Tensor Expansion과 SO(2) 근사<a class="headerlink" href="#tensor-expansion-so2" title="Permanent link">&para;</a></h2>
+<h3 id="cg-expansion">CG Expansion의 구조<a class="headerlink" href="#cg-expansion" title="Permanent link">&para;</a></h3>
+<p>Hamiltonian block을 CG 채널별로 분해하면:</p>
+<table>
+<thead>
+<tr>
+<th>Block type</th>
+<th>l_in=0 (isotropic)</th>
+<th>높은 l_in</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Diagonal</strong> (ii)</td>
+<td><strong>98-100%</strong></td>
+<td>&lt;2%</td>
+<td>거의 isotropic</td>
+</tr>
+<tr>
+<td><strong>C-H off-diag</strong></td>
+<td>90%</td>
+<td>10%</td>
+<td>σ 지배적</td>
+</tr>
+<tr>
+<td><strong>O-H off-diag</strong></td>
+<td>56%</td>
+<td>44%</td>
+<td>σ/π 혼합</td>
+</tr>
+<tr>
+<td><strong>H-H off-diag</strong></td>
+<td>16%</td>
+<td><strong>84%</strong></td>
+<td>방향성 지배적</td>
+</tr>
+</tbody>
+</table>
+<p>→ Diagonal: 저랭크 근사 가능. Off-diagonal: 모든 l_in 필요.</p>
+<h3 id="local-frame-off-diagonal">Local frame에서 off-diagonal 대각성<a class="headerlink" href="#local-frame-off-diagonal" title="Permanent link">&para;</a></h3>
+<p>Off-diagonal block을 bond 방향 local frame에서 측정하면:</p>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>local frame 대각 비율</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-H, C-C, O-H p-p</td>
+<td><strong>99.5-100%</strong></td>
+</tr>
+<tr>
+<td>H-H p-p (근거리)</td>
+<td>95-99%</td>
+</tr>
+<tr>
+<td>C-C d-d</td>
+<td><strong>100%</strong></td>
+</tr>
+<tr>
+<td><strong>p-d cross</strong></td>
+<td><strong>~50%</strong> (대각 근사 부적합)</td>
+</tr>
+</tbody>
+</table>
+<p>→ p-p, d-d: σ/π/δ 파라미터로 거의 완벽히 표현 가능
+→ p-d cross: bandwidth 확장 필요</p>
+<h3 id="so2-expansion">SO(2) Expansion 가능성<a class="headerlink" href="#so2-expansion" title="Permanent link">&para;</a></h3>
+<p>Full CG 대신 local frame에서 m-diagonal 예측 후 Wigner D로 복원:</p>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Full CG params</th>
+<th>SO(2) bw=0</th>
+<th>SO(2) bw=1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>p-p</td>
+<td>9</td>
+<td>3 (67%↓)</td>
+<td>7</td>
+</tr>
+<tr>
+<td>d-d</td>
+<td>25</td>
+<td>5 (80%↓)</td>
+<td>13</td>
+</tr>
+<tr>
+<td>p-d</td>
+<td>15</td>
+<td>3 (80%↓)</td>
+<td>7</td>
+</tr>
+</tbody>
+</table>
+<p>Diagonal block(ii)은 변경 없이 기존 CG 유지 (이미 l_in=0 지배적이라 저렴).</p>
+<h2 id="qhflow2">QHFlow2 관련 파일<a class="headerlink" href="#qhflow2" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>파일</th>
+<th>역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/common/orbital_conventions.py</code></td>
+<td>convention 정의</td>
+</tr>
+<tr>
+<td><code>src/common/matrix_transforms.py</code></td>
+<td>변환 엔진</td>
+</tr>
+<tr>
+<td><code>src/models/QHFlow.py</code></td>
+<td>좌표 permutation</td>
+</tr>
+<tr>
+<td><code>src/models/layers.py</code></td>
+<td>Expansion 클래스 (CG tensor product)</td>
+</tr>
+<tr>
+<td><code>src/utils.py</code></td>
+<td>간단한 Expansion (weight 없는 버전)</td>
+</tr>
+</tbody>
+</table>
 
 
 
