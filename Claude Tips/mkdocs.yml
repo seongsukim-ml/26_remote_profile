@@ -1,0 +1,55 @@
+site_name: Claude Tips
+site_description: NCloud ML Server 운영 팁 모음
+site_url: ""
+
+theme:
+  name: material
+  language: ko
+  palette:
+    - scheme: slate
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: 라이트 모드로 전환
+    - scheme: default
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: 다크 모드로 전환
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Server:
+    - HTTP Proxy (브라우저 접근): server/http_proxy.md
+    - HTTP Server 실행: server/http_server.md
+    - GPU 테스트: server/gpu_test.md
+  - Python:
+    - Persistent Conda: python/persistent_conda.md
+    - Conda + uv: python/conda_uv.md
+  - Data:
+    - 디렉토리 구조: data/directory_structure.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+
+plugins:
+  - search

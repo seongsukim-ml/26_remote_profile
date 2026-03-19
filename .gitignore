@@ -14,6 +14,9 @@ bin/rclone
 # rclone config (contains tokens)
 rclone/
 
+# Secrets directory (netrc, API keys)
+secrets/
+
 # OS
 .DS_Store
 Thumbs.db

@@ -23,196 +23,121 @@ The persistent volume at `/home1/irteam/data-vol1` survives container restarts.
 
 ```
 /home1/irteam/data-vol1/
-├── profile/          # Dotfiles & bootstrap (this repo)
-├── conda/            # Conda installation + envs + pkgs (persistent)
+├── profile/          # Dotfiles, bootstrap, docs (this repo)
+│   └── Claude Tips/  #   서버 세팅 & Claude Code 팁 (mkdocs)
+├── conda/            # Conda + envs + pkgs (persistent)
 ├── projects/         # All code projects (각 프로젝트별 git repo)
 ├── datasets/         # 공용 데이터셋 (프로젝트에서 symlink로 참조)
 ├── www/              # Web server files
-├── linux_conf/       # Legacy dotfiles (migrated → profile/)
-└── Claude Tips/      # Claude Code 사용 팁 모음
+└── linux_conf/       # Legacy dotfiles (migrated → profile/)
 ```
 
-- `projects/`, `datasets/`에는 각각 README.md가 있어 인덱스 역할을 함
-- 새 프로젝트/데이터셋 추가 시 해당 README.md를 업데이트할 것
+## Key Rules
 
-## How This Profile Works
-
-### Bootstrap (run once per new container)
-
-```bash
-source /home1/irteam/data-vol1/profile/setup.sh
-```
-
-This single command:
-1. Symlinks `gitconfig` → `~/.gitconfig`
-2. Symlinks `tmux.conf` → `~/.tmux.conf`
-3. Symlinks `vimrc` → `~/.vimrc`
-4. Symlinks `condarc` → `~/.condarc` (persistent envs_dirs/pkgs_dirs)
-5. Restores rclone config (Google Drive reconnection)
-6. Injects a loader into `~/.bashrc` that sources all `bashrc.d/*.sh` files
-7. Runs `install.sh` to install missing packages (conda, pip, rclone, Claude Code)
-8. Loads all settings into the current shell session
-
-### Directory Layout
-
-```
-profile/
-├── setup.sh              # Bootstrap entry point (source this)
-├── install.sh            # Auto-install packages (conda + pip + claude)
-├── gitconfig             # Git user config (→ ~/.gitconfig)
-├── tmux.conf             # Tmux config (→ ~/.tmux.conf)
-├── vimrc                 # Vim config (→ ~/.vimrc)
-├── condarc               # Conda config (→ ~/.condarc, persistent envs/pkgs dirs)
-├── CLAUDE.md             # This file — AI assistant instructions
-├── README.md             # Human-readable documentation
-├── .gitignore            # Excludes secrets from git
-├── rclone/               # rclone config backup (Google Drive tokens, gitignored)
-├── bin/                  # Custom scripts + rclone binary (added to PATH)
-└── bashrc.d/             # Modular shell configs (auto-loaded alphabetically)
-    ├── aliases.sh        #   Shortcuts: gs, nv, ca, ll, data, tmux-*, etc.
-    ├── env.sh            #   PATH, HISTSIZE, EDITOR, LANG
-    ├── functions.sh      #   Utilities: mkcd, ff, gpumem, extract, port
-    └── prompt.sh         #   PS1 with git branch + conda env
-```
-
-## Rules for Modifying This Profile
-
-1. **Add new shell config** → Create or edit a file in `bashrc.d/`. Do not edit `~/.bashrc` directly.
-2. **Add a new package** → Add it to `CONDA_PACKAGES` or `PIP_PACKAGES` in `install.sh`. Use conda for CLI/system tools, `uv pip install` for Python libs.
-3. **Add a custom script** → Place it in `bin/` and `chmod +x`. It's already in PATH.
-4. **Change tmux/vim config** → Edit `tmux.conf` or `vimrc` directly. Changes take effect on next tmux/vim start.
-5. **Never commit secrets** → SSH keys, tokens, credentials go in `.gitignore`. Check before committing.
-6. **No sudo/apt** → This container has no root access. Use `conda install -c conda-forge` or `pip install`.
-7. **Test changes** → Run `source ~/.bashrc` after editing to verify.
-
-## Available Aliases (quick reference)
-
-| Alias | Command | Category |
-|-------|---------|----------|
-| `gs` | `git status` | git |
-| `gl` | `git log --oneline --graph -20` | git |
-| `gd` | `git diff` | git |
-| `gb` | `git branch` | git |
-| `ga` | `git add` | git |
-| `gc` | `git commit` | git |
-| `gp` | `git push` | git |
-| `nv` | `nvidia-smi` | GPU |
-| `nvw` | `watch -n 1 nvidia-smi` | GPU |
-| `watch-gpu` | `watch -d -n 0.5 nvidia-smi` | GPU |
-| `ca` | `conda activate` | conda |
-| `cda` | `conda deactivate` | conda |
-| `cel` | `conda env list` | conda |
-| `data` | `cd /home1/irteam/data-vol1` | nav |
-| `py` | `python` | python |
-| `tmux-kill` | `tmux kill-session -t` | tmux |
-| `tmux-gpu` | `tmux at -t GPU` | tmux |
-| `tmux-jupyter` | `tmux at -t jupyter` | tmux |
-| `gdls` | `rclone lsd gdrive:` | gdrive |
-| `gdcp` | `rclone copy` | gdrive |
-| `gdsync` | `rclone sync` | gdrive |
-
-## Available Functions
-
-| Function | Usage | Description |
-|----------|-------|-------------|
-| `mkcd` | `mkcd dirname` | mkdir + cd in one step |
-| `ff` | `ff pattern` | Find files matching pattern |
-| `gpumem` | `gpumem` | Show GPU memory usage per device |
-| `extract` | `extract file.tar.gz` | Auto-detect and extract archives |
-| `port` | `port 8080` | Check if a port is in use |
-
-## Installed Packages
-
-### Via conda
-tmux, htop, tree, vim, openssh, uv
-
-### Via uv (pip)
-gpustat, wandb, torch
-
-### Via direct download
-rclone (Google Drive / cloud storage)
-
-### Via installer script
-Claude Code CLI
-
-## Git Remote
-
-- Repo: https://github.com/seongsukim-ml/26_remote_profile
-- After changes, commit and push to keep the remote in sync.
+1. **No sudo/apt** → `conda install -c conda-forge` 또는 `uv pip install`만 사용
+2. **Never commit secrets** → SSH keys, tokens, credentials은 `.gitignore`에 추가
+3. **Shell config** → `bashrc.d/`에 파일 추가/수정. `~/.bashrc` 직접 수정 금지
+4. **Bootstrap** → 새 컨테이너에서 `source /home1/irteam/data-vol1/profile/setup.sh` 한 번 실행
 
 ## Code Workflow
 
-### Project Location
+### Project Convention
 
-- All projects live under `/home1/irteam/data-vol1/projects/`
-- Each project is a subdirectory with its own git repo and README
-- The project index is maintained in `/home1/irteam/data-vol1/projects/README.md` — update it when creating or archiving a project
+- 모든 프로젝트: `/home1/irteam/data-vol1/projects/` 아래에 생성
+- 프로젝트 인덱스: `/home1/irteam/data-vol1/projects/README.md`에 기록
+- Conda env 이름 = 프로젝트 디렉토리 이름 (e.g., project `foo` → env `foo`)
 
-### Conda + uv 패키지 관리
+### 프로젝트 디렉토리 구조
 
-- Conda: `/home1/irteam/data-vol1/conda/` (persistent, 컨테이너 재시작 후에도 유지)
-- **conda** → Python 버전, 시스템 라이브러리, CUDA 의존성 관리 (`conda install -c conda-forge`)
-- **uv** → Python 패키지 설치 (`uv pip install`, pip 대비 10~100x 빠름)
-- pip 대신 `uv pip install`을 기본으로 사용
-- conda 환경별로 uv가 해당 환경의 site-packages에 설치함
-
-#### 환경 생성 패턴
-```bash
-conda create -n myproject python=3.11 -y
-conda activate myproject
-uv pip install torch transformers   # pip 대신 uv 사용
-uv pip install -r requirements.txt
 ```
-
-#### 환경 관리 규칙
-- Create project-specific envs under `/home1/irteam/data-vol1/conda/envs/` so they persist
-- Naming convention: env name matches project directory name (e.g., project `foo` → env `foo`)
-- CUDA 관련 패키지(cudatoolkit 등)는 conda로 설치
-- 일반 Python 패키지는 uv로 설치
-
-### Data Management
-
-- 데이터는 프로젝트 밖의 공용 디렉토리에 저장: `/home1/irteam/data-vol1/datasets/`
-- 프로젝트에서는 심볼릭 링크로 참조: `ln -s /home1/irteam/data-vol1/datasets/<dataset_name> <project>/data/<dataset_name>`
-- 이렇게 하면 여러 프로젝트가 동일 데이터를 중복 없이 공유 가능
-- 데이터는 git에 포함하지 않음 — 프로젝트 `.gitignore`에 `data/` 추가
-- 새 데이터셋 추가 시 `/home1/irteam/data-vol1/datasets/README.md`에 데이터셋 설명 기록
-
-#### 프로젝트 디렉토리 구조 예시
-```
-projects/myproject/
-├── configs/          # YAML config files
+projects/<name>/
+├── configs/          # YAML 설정 파일 (train.yaml, model.yaml 등)
 ├── data/             # symlinks → /home1/irteam/data-vol1/datasets/*
-│   └── my_dataset -> /home1/irteam/data-vol1/datasets/my_dataset
 ├── src/
-├── requirements.txt
+├── requirements.txt  # uv pip freeze > requirements.txt 로 관리
 ├── .gitignore        # data/ 포함
 └── README.md
 ```
 
+### Package Management
+
+- **conda** → Python 버전, CUDA, 시스템 라이브러리
+- **uv** → Python 패키지 (`uv pip install`, pip 대신 사용)
+- 환경 재현: `requirements.txt` 필수, CUDA 의존성 있으면 `environment.yaml`도 관리
+
+### Data Management
+
+- 데이터 저장: `/home1/irteam/data-vol1/datasets/`
+- 프로젝트에서 symlink로 참조: `ln -s /home1/irteam/data-vol1/datasets/<name> data/<name>`
+- 데이터셋 인덱스: `/home1/irteam/data-vol1/datasets/README.md`에 기록
+- `data/`는 git에 포함하지 않음
+
 ### Config Management
 
-- 프로젝트 설정은 YAML 파일을 기본으로 사용
-- 프로젝트 루트에 `configs/` 디렉토리를 두고 용도별로 분리 (e.g., `configs/train.yaml`, `configs/model.yaml`)
-- 실행 시 config 파일을 명시적으로 지정: `python train.py --config configs/train.yaml`
+- YAML 파일 기본, `configs/` 디렉토리에 용도별 분리
+- 실행 시 명시적 지정: `python train.py --config configs/train.yaml`
 
-### Package Reproducibility
+## Workflow Orchestration
 
-- 각 프로젝트에 `requirements.txt`를 유지하여 환경 재현 가능하게 관리
-- 패키지 추가/변경 후 반드시 export: `uv pip freeze > requirements.txt`
-- 환경 재생성 시: `conda create -n <project> python=<ver> -y && conda activate <project> && uv pip install -r requirements.txt`
-- CUDA/시스템 의존성이 있으면 `environment.yaml`도 함께 관리:
-  ```bash
-  conda env export --from-history > environment.yaml
-  ```
+### 1. Plan Mode Default
+- 3단계 이상 또는 아키텍처 결정이 필요한 작업은 반드시 plan mode 진입
+- 진행이 꼬이면 즉시 STOP하고 re-plan — 밀어붙이지 않기
+- 구현뿐 아니라 검증 단계에도 plan mode 활용
+- 모호함을 줄이기 위해 상세 spec을 먼저 작성
 
-## Google Drive (rclone)
+### 2. Subagent Strategy
+- Subagent를 적극 활용하여 main context window를 깨끗하게 유지
+- 리서치, 탐색, 병렬 분석은 subagent에 위임
+- 복잡한 문제는 compute를 더 투입 (subagent 병렬)
+- 하나의 subagent에는 하나의 task만 부여
 
-- Remote name: `gdrive` (configured in rclone)
-- Config backup: `profile/rclone/rclone.conf` (gitignored, persisted on volume)
-- Use `gdls`, `gdcp`, `gdsync` aliases or `rclone` directly
-- If token expires: re-authorize on local PC with `rclone authorize "drive"`, then update `~/.config/rclone/rclone.conf` and backup to `profile/rclone/`
+### 3. Self-Improvement Loop
+- 사용자 교정 후 반드시 `tasks/lessons.md`에 패턴 기록
+- 같은 실수를 방지하는 규칙을 스스로 작성
+- 실수율이 줄어들 때까지 반복 개선
+- 세션 시작 시 해당 프로젝트의 lessons 검토
 
-## Related Repository
+### 4. Verification Before Done
+- 작동을 증명하지 않고 완료 표시 금지
+- 변경 사항과 main 간 동작 차이를 diff로 확인
+- "시니어 엔지니어가 승인할 수준인가?" 자문
+- 테스트 실행, 로그 확인, 정확성 입증
 
-- https://github.com/seongsukim-ml/linux_conf — Original dotfiles (bare repo style). Settings have been migrated into this profile.
+### 5. Demand Elegance (Balanced)
+- 비자명한 변경에는 잠시 멈추고 "더 우아한 방법은?" 자문
+- hacky하다면 "지금 아는 것을 모두 활용한 우아한 해법"을 구현
+- 단순하고 명백한 수정에는 적용하지 않음 — over-engineer 금지
+- 제출 전에 자기 코드에 도전
+
+### 6. Autonomous Bug Fixing
+- 버그 리포트를 받으면 바로 수정. hand-holding 요청 금지
+- 로그, 에러, 실패 테스트를 추적하여 직접 해결
+- 사용자의 context switching 제로 목표
+- 실패하는 CI 테스트도 지시 없이 스스로 수정
+
+## Task Management
+
+1. **Plan First**: `tasks/todo.md`에 체크 가능한 항목으로 계획 작성
+2. **Verify Plan**: 구현 시작 전 사용자와 계획 확인
+3. **Track Progress**: 완료 시 항목을 즉시 체크
+4. **Explain Changes**: 각 단계마다 high-level 요약 제공
+5. **Document Results**: `tasks/todo.md`에 review 섹션 추가
+6. **Capture Lessons**: 교정 후 `tasks/lessons.md` 업데이트
+
+## Core Principles
+
+- **Simplicity First**: 모든 변경을 가능한 한 단순하게. 최소한의 코드 영향
+- **No Laziness**: 근본 원인을 찾기. 임시 수정 금지. 시니어 개발자 기준
+- **Minimal Impact**: 필요한 부분만 수정. 버그를 도입하지 않기
+
+## External Tools
+
+- **Google Drive**: rclone (`gdls`, `gdcp`, `gdsync` aliases)
+- **Git remote**: https://github.com/seongsukim-ml/26_remote_profile
+
+## 세부 참조
+
+aliases, functions, 패키지 목록, 서버 세팅 상세 등은 아래를 참조:
+- Shell aliases/functions → `profile/bashrc.d/` 파일들 직접 확인
+- 서버 세팅 & 팁 → `profile/Claude Tips/` (mkdocs 문서)
+- 패키지 설치 스크립트 → `profile/install.sh`

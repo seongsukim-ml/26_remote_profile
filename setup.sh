@@ -73,7 +73,16 @@ if [ -f "$RCLONE_CONF_BACKUP" ]; then
     fi
 fi
 
-# ---- 7. Link Claude Code commands ----
+# ---- 7. Restore netrc (wandb, etc.) ----
+if [ -f "$PROFILE_ROOT/secrets/netrc" ] && [ ! -f "$HOME/.netrc" ]; then
+    cp "$PROFILE_ROOT/secrets/netrc" "$HOME/.netrc"
+    chmod 600 "$HOME/.netrc"
+    echo "[setup] ✓ netrc restored (wandb credentials)"
+elif [ -f "$HOME/.netrc" ]; then
+    echo "[setup] ✓ netrc already present"
+fi
+
+# ---- 8. Link Claude Code commands ----
 if [ -d "$PROFILE_ROOT/.claude/commands" ]; then
     mkdir -p "$HOME/.claude/commands"
     for cmd in "$PROFILE_ROOT"/.claude/commands/*.md; do
@@ -82,13 +91,13 @@ if [ -d "$PROFILE_ROOT/.claude/commands" ]; then
     echo "[setup] ✓ Claude Code commands linked"
 fi
 
-# ---- 8. Install packages ----
+# ---- 9. Install packages ----
 if [ -f "$PROFILE_ROOT/install.sh" ]; then
     echo "[setup] Running install.sh..."
     bash "$PROFILE_ROOT/install.sh"
 fi
 
-# ---- 9. Load profile into current session ----
+# ---- 10. Load profile into current session ----
 for f in "$PROFILE_ROOT"/bashrc.d/*.sh; do
     [ -r "$f" ] && source "$f"
 done
