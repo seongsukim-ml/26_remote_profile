@@ -73,13 +73,22 @@ if [ -f "$RCLONE_CONF_BACKUP" ]; then
     fi
 fi
 
-# ---- 7. Install packages ----
+# ---- 7. Link Claude Code commands ----
+if [ -d "$PROFILE_ROOT/.claude/commands" ]; then
+    mkdir -p "$HOME/.claude/commands"
+    for cmd in "$PROFILE_ROOT"/.claude/commands/*.md; do
+        [ -f "$cmd" ] && ln -sf "$cmd" "$HOME/.claude/commands/$(basename "$cmd")"
+    done
+    echo "[setup] ✓ Claude Code commands linked"
+fi
+
+# ---- 8. Install packages ----
 if [ -f "$PROFILE_ROOT/install.sh" ]; then
     echo "[setup] Running install.sh..."
     bash "$PROFILE_ROOT/install.sh"
 fi
 
-# ---- 8. Load profile into current session ----
+# ---- 9. Load profile into current session ----
 for f in "$PROFILE_ROOT"/bashrc.d/*.sh; do
     [ -r "$f" ] && source "$f"
 done
