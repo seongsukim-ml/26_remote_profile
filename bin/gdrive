@@ -1,15 +1,18 @@
 #!/bin/bash
 # ============================================
 # gdrive - Google Drive CLI skill via rclone
+# Scoped to: gdrive:remote_drive (via gdrive-rd alias)
 # Usage: gdrive <command> [args...]
 # ============================================
 
-REMOTE="gdrive"
+REMOTE="gdrive-rd"
 PROG="$(basename "$0")"
 
 usage() {
     cat << 'EOF'
 Usage: gdrive <command> [args...]
+
+Remote is scoped to: Google Drive / remote_drive
 
 Commands:
   ls    [path]              List folders at path (default: root)
@@ -88,7 +91,7 @@ case "${1:-help}" in
         rclone size "$REMOTE:${2:-}" 2>&1
         ;;
     about)
-        rclone about "$REMOTE:" 2>&1
+        rclone about "gdrive:" 2>&1
         ;;
     help|--help|-h)
         usage

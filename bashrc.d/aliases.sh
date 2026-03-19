@@ -54,7 +54,7 @@ alias cda='conda deactivate'
 alias cel='conda env list'
 
 # rclone / cloud storage
-alias gdls='rclone lsd gdrive:'
+alias gdls='rclone lsd gdrive-rd:'
 alias dbls='rclone lsd dropbox-seongsu:'
 alias gdcp='rclone copy'
 alias gdsync='rclone sync'
