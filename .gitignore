@@ -1,0 +1,10 @@
+# Secrets - never commit
+ssh/
+*.pem
+*.key
+.credentials*
+.token*
+
+# OS
+.DS_Store
+Thumbs.db

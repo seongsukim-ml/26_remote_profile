@@ -1,0 +1,29 @@
+[user]
+    name = seongsukim-ml
+    email = seongsu.kim@kaist.ac.kr
+
+[core]
+    editor = vim
+    autocrlf = input
+    pager = less -FRX
+
+[init]
+    defaultBranch = main
+
+[alias]
+    st = status
+    co = checkout
+    br = branch
+    ci = commit
+    lg = log --oneline --graph --decorate -20
+    unstage = reset HEAD --
+    last = log -1 HEAD
+
+[color]
+    ui = auto
+
+[pull]
+    rebase = false
+
+[push]
+    default = current
