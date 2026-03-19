@@ -16,7 +16,7 @@ The persistent volume at `/home1/irteam/data-vol1` survives container restarts.
 - GPU: 8x NVIDIA H200 (140 GiB each)
 - CPU: 2x Intel Xeon Platinum 8462Y+ (128 vCPU)
 - RAM: 2 TiB
-- Package manager: conda + pip (no sudo/apt access)
+- Package manager: conda + uv (no sudo/apt access)
 - Persistent storage: `/home1/irteam/data-vol1` (Lustre, 140 TiB)
 
 ## How This Profile Works
@@ -31,9 +31,10 @@ This single command:
 1. Symlinks `gitconfig` → `~/.gitconfig`
 2. Symlinks `tmux.conf` → `~/.tmux.conf`
 3. Symlinks `vimrc` → `~/.vimrc`
-4. Injects a loader into `~/.bashrc` that sources all `bashrc.d/*.sh` files
-5. Runs `install.sh` to install missing packages (conda, pip, Claude Code)
-6. Loads all settings into the current shell session
+4. Restores rclone config (Google Drive reconnection)
+5. Injects a loader into `~/.bashrc` that sources all `bashrc.d/*.sh` files
+6. Runs `install.sh` to install missing packages (conda, pip, rclone, Claude Code)
+7. Loads all settings into the current shell session
 
 ### Directory Layout
 
@@ -47,7 +48,8 @@ profile/
 ├── CLAUDE.md             # This file — AI assistant instructions
 ├── README.md             # Human-readable documentation
 ├── .gitignore            # Excludes secrets from git
-├── bin/                  # Custom scripts (added to PATH)
+├── rclone/               # rclone config backup (Google Drive tokens, gitignored)
+├── bin/                  # Custom scripts + rclone binary (added to PATH)
 └── bashrc.d/             # Modular shell configs (auto-loaded alphabetically)
     ├── aliases.sh        #   Shortcuts: gs, nv, ca, ll, data, tmux-*, etc.
     ├── env.sh            #   PATH, HISTSIZE, EDITOR, LANG
@@ -87,6 +89,9 @@ profile/
 | `tmux-kill` | `tmux kill-session -t` | tmux |
 | `tmux-gpu` | `tmux at -t GPU` | tmux |
 | `tmux-jupyter` | `tmux at -t jupyter` | tmux |
+| `gdls` | `rclone lsd gdrive:` | gdrive |
+| `gdcp` | `rclone copy` | gdrive |
+| `gdsync` | `rclone sync` | gdrive |
 
 ## Available Functions
 
@@ -106,6 +111,9 @@ tmux, htop, tree, vim
 ### Via pip
 gpustat, wandb
 
+### Via direct download
+rclone (Google Drive / cloud storage)
+
 ### Via installer script
 Claude Code CLI
 
@@ -113,6 +121,27 @@ Claude Code CLI
 
 - Repo: https://github.com/seongsukim-ml/26_remote_profile
 - After changes, commit and push to keep the remote in sync.
+
+## Code Workflow
+
+### Project Location
+
+- All projects live under `/home1/irteam/data-vol1/projects/`
+- Each project is a subdirectory with its own git repo and README
+- The project index is maintained in `/home1/irteam/data-vol1/projects/README.md` — update it when creating or archiving a project
+
+### Conda Environment Management
+
+- Conda is installed at `/home1/irteam/data-vol1/conda/` (persistent across container restarts)
+- Create project-specific envs under `/home1/irteam/data-vol1/conda/envs/` so they persist
+- Naming convention: env name matches project directory name (e.g., project `foo` → env `foo`)
+
+## Google Drive (rclone)
+
+- Remote name: `gdrive` (configured in rclone)
+- Config backup: `profile/rclone/rclone.conf` (gitignored, persisted on volume)
+- Use `gdls`, `gdcp`, `gdsync` aliases or `rclone` directly
+- If token expires: re-authorize on local PC with `rclone authorize "drive"`, then update `~/.config/rclone/rclone.conf` and backup to `profile/rclone/`
 
 ## Related Repository
 

@@ -1,10 +1,15 @@
 #!/bin/bash
 # ============================================
 # Package Installer
-# Installs packages via conda, pip, and other methods
+# Uses persistent conda at /home1/irteam/data-vol1/conda
+# Packages persist across container restarts
 # ============================================
 
 set -e
+
+CONDA_ROOT="/home1/irteam/data-vol1/conda"
+CONDA="$CONDA_ROOT/bin/conda"
+PIP="$CONDA_ROOT/bin/pip"
 
 # ---- 1. Conda packages ----
 CONDA_PACKAGES=(
@@ -12,16 +17,17 @@ CONDA_PACKAGES=(
     htop
     tree
     vim
+    openssh
 )
 
-echo "[install] Checking conda packages..."
+echo "[install] Checking conda packages (persistent)..."
 
 for pkg in "${CONDA_PACKAGES[@]}"; do
-    if command -v "$pkg" &>/dev/null; then
+    if "$CONDA_ROOT/bin/$pkg" --version &>/dev/null 2>&1 || "$CONDA" list "$pkg" 2>/dev/null | grep -q "^$pkg "; then
         echo "  ✓ $pkg (already installed)"
     else
         echo "  ↓ Installing $pkg..."
-        conda install -y -c conda-forge "$pkg" 2>&1 | tail -1
+        "$CONDA" install -y -c conda-forge "$pkg" 2>&1 | tail -1
         echo "  ✓ $pkg (installed)"
     fi
 done
@@ -32,41 +38,43 @@ PIP_PACKAGES=(
     wandb
 )
 
-echo "[install] Checking pip packages..."
+echo "[install] Checking pip packages (persistent)..."
 
 for pkg in "${PIP_PACKAGES[@]}"; do
-    if python -c "import $pkg" 2>/dev/null || command -v "$pkg" &>/dev/null; then
+    if "$CONDA_ROOT/bin/python" -c "import $pkg" 2>/dev/null || "$CONDA_ROOT/bin/$pkg" --version &>/dev/null 2>&1; then
         echo "  ✓ $pkg (already installed)"
     else
         echo "  ↓ Installing $pkg..."
-        pip install -q "$pkg"
+        "$PIP" install -q "$pkg"
         echo "  ✓ $pkg (installed)"
     fi
 done
 
-# ---- 3. Google Drive (gdrive) ----
+# ---- 3. rclone (Google Drive + cloud storage) ----
 PROFILE_ROOT="/home1/irteam/data-vol1/profile"
-echo "[install] Checking gdrive..."
-if command -v gdrive &>/dev/null; then
-    echo "  ✓ gdrive ($(gdrive version 2>/dev/null | head -1))"
+RCLONE_BIN="$PROFILE_ROOT/bin/rclone"
+RCLONE_CONF_BACKUP="$PROFILE_ROOT/rclone/rclone.conf"
+
+echo "[install] Checking rclone..."
+if [ -x "$RCLONE_BIN" ]; then
+    echo "  ✓ rclone ($("$RCLONE_BIN" version 2>/dev/null | head -1))"
 else
-    echo "  ↓ Installing gdrive..."
-    curl -fsSL -o /tmp/gdrive.tar.gz https://github.com/glotlabs/gdrive/releases/download/3.9.1/gdrive_linux-x64.tar.gz
-    tar -xzf /tmp/gdrive.tar.gz -C "$PROFILE_ROOT/bin/" gdrive
-    chmod +x "$PROFILE_ROOT/bin/gdrive"
-    rm -f /tmp/gdrive.tar.gz
-    echo "  ✓ gdrive (installed)"
+    echo "  ↓ Installing rclone..."
+    curl -fsSL -o /tmp/rclone.zip https://downloads.rclone.org/rclone-current-linux-amd64.zip
+    unzip -o /tmp/rclone.zip -d /tmp/
+    cp /tmp/rclone-*-linux-amd64/rclone "$RCLONE_BIN"
+    chmod +x "$RCLONE_BIN"
+    rm -rf /tmp/rclone.zip /tmp/rclone-*-linux-amd64
+    echo "  ✓ rclone (installed)"
 fi
 
-# Restore gdrive account if not already imported
-GDRIVE_EXPORT="$PROFILE_ROOT/gdrive/gdrive_export.tar"
-if [ -f "$GDRIVE_EXPORT" ]; then
-    if "$PROFILE_ROOT/bin/gdrive" account list 2>/dev/null | grep -q '@'; then
-        echo "  ✓ gdrive account already imported"
-    else
-        "$PROFILE_ROOT/bin/gdrive" account import "$GDRIVE_EXPORT"
-        echo "  ✓ gdrive account imported"
-    fi
+# Restore rclone config from persistent backup
+mkdir -p "$HOME/.config/rclone"
+if [ -f "$RCLONE_CONF_BACKUP" ] && [ ! -f "$HOME/.config/rclone/rclone.conf" ]; then
+    cp "$RCLONE_CONF_BACKUP" "$HOME/.config/rclone/rclone.conf"
+    echo "  ✓ rclone config restored from backup"
+elif [ -f "$HOME/.config/rclone/rclone.conf" ]; then
+    echo "  ✓ rclone config already present"
 fi
 
 # ---- 4. Claude Code ----

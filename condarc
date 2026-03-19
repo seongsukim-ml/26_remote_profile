@@ -1,0 +1,7 @@
+envs_dirs:
+  - /home1/irteam/data-vol1/conda/envs
+  - /opt/conda/envs
+
+pkgs_dirs:
+  - /home1/irteam/data-vol1/conda/pkgs
+  - /opt/conda/pkgs

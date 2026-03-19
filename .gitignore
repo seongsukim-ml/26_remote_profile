@@ -10,6 +10,10 @@ gdrive/
 
 # Binaries (large files)
 bin/gdrive
+bin/rclone
+
+# rclone config (contains tokens)
+rclone/
 
 # OS
 .DS_Store

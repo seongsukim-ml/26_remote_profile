@@ -6,9 +6,18 @@
 # ============================================
 
 PROFILE_ROOT="/home1/irteam/data-vol1/profile"
+CONDA_ROOT="/home1/irteam/data-vol1/conda"
 MARKER="# >>> data-vol1 profile >>>"
 
 echo "[setup] Bootstrapping profile from $PROFILE_ROOT"
+
+# ---- 0. Initialize persistent conda ----
+if [ -d "$CONDA_ROOT" ]; then
+    eval "$("$CONDA_ROOT/bin/conda" shell.bash hook)"
+    echo "[setup] ✓ persistent conda initialized ($CONDA_ROOT)"
+else
+    echo "[setup] ✗ persistent conda not found at $CONDA_ROOT"
+fi
 
 # ---- 1. Link gitconfig ----
 if [ -f "$PROFILE_ROOT/gitconfig" ]; then
@@ -28,7 +37,13 @@ if [ -f "$PROFILE_ROOT/vimrc" ]; then
     echo "[setup] ✓ vimrc linked"
 fi
 
-# ---- 4. Inject bashrc loader into ~/.bashrc ----
+# ---- 4. Link condarc ----
+if [ -f "$PROFILE_ROOT/condarc" ]; then
+    ln -sf "$PROFILE_ROOT/condarc" "$HOME/.condarc"
+    echo "[setup] ✓ condarc linked (persistent envs_dirs/pkgs_dirs)"
+fi
+
+# ---- 5. Inject bashrc loader into ~/.bashrc ----
 if ! grep -q "$MARKER" "$HOME/.bashrc" 2>/dev/null; then
     cat >> "$HOME/.bashrc" << 'BASHRC_BLOCK'
 
@@ -46,13 +61,25 @@ else
     echo "[setup] ✓ bashrc loader already present"
 fi
 
-# ---- 5. Install packages ----
+# ---- 5. Link rclone config ----
+RCLONE_CONF_BACKUP="$PROFILE_ROOT/rclone/rclone.conf"
+if [ -f "$RCLONE_CONF_BACKUP" ]; then
+    mkdir -p "$HOME/.config/rclone"
+    if [ ! -f "$HOME/.config/rclone/rclone.conf" ]; then
+        cp "$RCLONE_CONF_BACKUP" "$HOME/.config/rclone/rclone.conf"
+        echo "[setup] ✓ rclone config restored"
+    else
+        echo "[setup] ✓ rclone config already present"
+    fi
+fi
+
+# ---- 6. Install packages ----
 if [ -f "$PROFILE_ROOT/install.sh" ]; then
     echo "[setup] Running install.sh..."
     bash "$PROFILE_ROOT/install.sh"
 fi
 
-# ---- 6. Load profile into current session ----
+# ---- 7. Load profile into current session ----
 for f in "$PROFILE_ROOT"/bashrc.d/*.sh; do
     [ -r "$f" ] && source "$f"
 done

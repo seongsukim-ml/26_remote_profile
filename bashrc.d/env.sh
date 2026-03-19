@@ -6,6 +6,12 @@
 # Profile root
 export PROFILE_ROOT="/home1/irteam/data-vol1/profile"
 
+# Persistent conda
+CONDA_ROOT="/home1/irteam/data-vol1/conda"
+if [ -d "$CONDA_ROOT" ] && ! command -v conda &>/dev/null; then
+    eval "$("$CONDA_ROOT/bin/conda" shell.bash hook)"
+fi
+
 # Custom bin
 export PATH="$PROFILE_ROOT/bin:$HOME/.local/bin:$PATH"
 

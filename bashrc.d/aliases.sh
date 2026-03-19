@@ -52,3 +52,8 @@ alias jl='jupyter lab'
 alias ca='conda activate'
 alias cda='conda deactivate'
 alias cel='conda env list'
+
+# rclone / Google Drive
+alias gdls='rclone lsd gdrive:'
+alias gdcp='rclone copy'
+alias gdsync='rclone sync'
