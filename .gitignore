@@ -5,6 +5,12 @@ ssh/
 .credentials*
 .token*
 
+# Google Drive credentials
+gdrive/
+
+# Binaries (large files)
+bin/gdrive
+
 # OS
 .DS_Store
 Thumbs.db

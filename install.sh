@@ -44,7 +44,32 @@ for pkg in "${PIP_PACKAGES[@]}"; do
     fi
 done
 
-# ---- 3. Claude Code ----
+# ---- 3. Google Drive (gdrive) ----
+PROFILE_ROOT="/home1/irteam/data-vol1/profile"
+echo "[install] Checking gdrive..."
+if command -v gdrive &>/dev/null; then
+    echo "  ✓ gdrive ($(gdrive version 2>/dev/null | head -1))"
+else
+    echo "  ↓ Installing gdrive..."
+    curl -fsSL -o /tmp/gdrive.tar.gz https://github.com/glotlabs/gdrive/releases/download/3.9.1/gdrive_linux-x64.tar.gz
+    tar -xzf /tmp/gdrive.tar.gz -C "$PROFILE_ROOT/bin/" gdrive
+    chmod +x "$PROFILE_ROOT/bin/gdrive"
+    rm -f /tmp/gdrive.tar.gz
+    echo "  ✓ gdrive (installed)"
+fi
+
+# Restore gdrive account if not already imported
+GDRIVE_EXPORT="$PROFILE_ROOT/gdrive/gdrive_export.tar"
+if [ -f "$GDRIVE_EXPORT" ]; then
+    if "$PROFILE_ROOT/bin/gdrive" account list 2>/dev/null | grep -q '@'; then
+        echo "  ✓ gdrive account already imported"
+    else
+        "$PROFILE_ROOT/bin/gdrive" account import "$GDRIVE_EXPORT"
+        echo "  ✓ gdrive account imported"
+    fi
+fi
+
+# ---- 4. Claude Code ----
 echo "[install] Checking Claude Code..."
 if command -v claude &>/dev/null; then
     echo "  ✓ claude ($(claude --version 2>/dev/null))"
