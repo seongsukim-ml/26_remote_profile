@@ -6,9 +6,9 @@
 # Profile root
 export PROFILE_ROOT="/home1/irteam/data-vol1/profile"
 
-# Persistent conda
+# Persistent conda (always override system /opt/conda)
 CONDA_ROOT="/home1/irteam/data-vol1/conda"
-if [ -d "$CONDA_ROOT" ] && ! command -v conda &>/dev/null; then
+if [ -d "$CONDA_ROOT" ]; then
     eval "$("$CONDA_ROOT/bin/conda" shell.bash hook)"
 fi
 

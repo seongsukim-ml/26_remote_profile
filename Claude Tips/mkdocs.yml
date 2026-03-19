@@ -28,15 +28,19 @@ theme:
 
 nav:
   - Home: index.md
-  - Server:
-    - HTTP Proxy (브라우저 접근): server/http_proxy.md
-    - HTTP Server 실행: server/http_server.md
-    - GPU 테스트: server/gpu_test.md
-  - Python:
-    - Persistent Conda: python/persistent_conda.md
-    - Conda + uv: python/conda_uv.md
-  - Data:
-    - 디렉토리 구조: data/directory_structure.md
+  - General:
+    - Server:
+      - HTTP Proxy (브라우저 접근): server/http_proxy.md
+      - HTTP Server 실행: server/http_server.md
+      - GPU 테스트: server/gpu_test.md
+    - Python:
+      - Persistent Conda: python/persistent_conda.md
+      - Conda + uv: python/conda_uv.md
+      - Plot Style Guide: python/plot_style_guide.md
+    - Data:
+      - 디렉토리 구조: data/directory_structure.md
+  - Projects:
+    - "(프로젝트별 팁은 여기에 추가)": projects/index.md
 
 markdown_extensions:
   - pymdownx.highlight:
