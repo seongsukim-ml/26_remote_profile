@@ -39,8 +39,10 @@ nav:
       - Plot Style Guide: python/plot_style_guide.md
     - Data:
       - 디렉토리 구조: data/directory_structure.md
+      - DFT Metadata Template: data/dft_metadata.md
   - Projects:
     - "(프로젝트별 팁은 여기에 추가)": projects/index.md
+    - PySCF vs e3nn Convention: projects/pyscf_e3nn_convention.md
 
 markdown_extensions:
   - pymdownx.highlight:

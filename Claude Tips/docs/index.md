@@ -35,3 +35,8 @@ Python 환경 및 패키지 관리
 데이터 및 파일 관리
 
 - [data-vol1 디렉토리 구조](data/directory_structure.md) — 영구 볼륨의 폴더 구성과 역할
+
+### Projects
+프로젝트 관련 노하우
+
+- [PySCF vs e3nn Convention](projects/pyscf_e3nn_convention.md) — 구면 조화 함수 순서/축 차이와 최적화

@@ -11,28 +11,28 @@
       
       
       
-        <link rel="prev" href="../persistent_conda/">
+        <link rel="prev" href="../data/dft_metadata/">
       
       
-        <link rel="next" href="../plot_style_guide/">
+        <link rel="next" href="pyscf_e3nn_convention/">
       
       
         
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
     
     
       
-        <title>Conda + uv - Claude Tips</title>
+        <title>(프로젝트별 팁은 여기에 추가) - Claude Tips</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -51,7 +51,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#conda-uv" class="md-skip">
+        <a href="#project-specific-tips" class="md-skip">
           콘텐츠로 이동
         </a>
       
@@ -92,7 +92,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="상단/헤더">
-    <a href="../.." title="Claude Tips" class="md-header__button md-logo" aria-label="Claude Tips" data-md-component="logo">
+    <a href=".." title="Claude Tips" class="md-header__button md-logo" aria-label="Claude Tips" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Conda + uv
+              (프로젝트별 팁은 여기에 추가)
             
           </span>
         </div>
@@ -218,7 +218,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="네비게이션" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Claude Tips" class="md-nav__button md-logo" aria-label="Claude Tips" data-md-component="logo">
+    <a href=".." title="Claude Tips" class="md-nav__button md-logo" aria-label="Claude Tips" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -236,7 +236,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -260,8 +260,6 @@
       
   
   
-    
-  
   
   
     
@@ -274,11 +272,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
@@ -299,7 +299,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -368,7 +368,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../server/http_proxy/" class="md-nav__link">
+      <a href="../server/http_proxy/" class="md-nav__link">
         
   
   
@@ -396,7 +396,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../server/http_server/" class="md-nav__link">
+      <a href="../server/http_server/" class="md-nav__link">
         
   
   
@@ -424,7 +424,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../server/gpu_test/" class="md-nav__link">
+      <a href="../server/gpu_test/" class="md-nav__link">
         
   
   
@@ -457,8 +457,6 @@
                 
   
   
-    
-  
   
   
     
@@ -468,11 +466,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
         
           
           <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
@@ -493,7 +493,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -511,7 +511,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../persistent_conda/" class="md-nav__link">
+      <a href="../python/persistent_conda/" class="md-nav__link">
         
   
   
@@ -536,37 +536,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Conda + uv
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../python/conda_uv/" class="md-nav__link">
         
   
   
@@ -582,109 +555,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="목차">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      목차
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        역할 분담
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        설치
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        기본 사용법
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="기본 사용법">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#conda-uv_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        conda 환경 만들기 + uv로 패키지 설치
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#base-uv" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        현재 base 환경에서 uv 사용
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#uv" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        uv 주요 명령어
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        주의사항
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -697,7 +567,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../plot_style_guide/" class="md-nav__link">
+      <a href="../python/plot_style_guide/" class="md-nav__link">
         
   
   
@@ -784,7 +654,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../data/directory_structure/" class="md-nav__link">
+      <a href="../data/directory_structure/" class="md-nav__link">
         
   
   
@@ -812,7 +682,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../data/dft_metadata/" class="md-nav__link">
+      <a href="../data/dft_metadata/" class="md-nav__link">
         
   
   
@@ -852,8 +722,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -864,13 +736,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
@@ -891,7 +761,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -906,10 +776,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../projects/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    (프로젝트별 팁은 여기에 추가)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -925,6 +822,48 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="목차">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      목차
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        구분 기준
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#projects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Projects
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -937,7 +876,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../projects/pyscf_e3nn_convention/" class="md-nav__link">
+      <a href="pyscf_e3nn_convention/" class="md-nav__link">
         
   
   
@@ -995,7 +934,7 @@
   <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        역할 분담
+        구분 기준
       
     </span>
   </a>
@@ -1003,71 +942,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#projects" class="md-nav__link">
     <span class="md-ellipsis">
       
-        설치
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        기본 사용법
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="기본 사용법">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#conda-uv_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        conda 환경 만들기 + uv로 패키지 설치
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#base-uv" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        현재 base 환경에서 uv 사용
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#uv" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        uv 주요 명령어
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        주의사항
+        Projects
       
     </span>
   </a>
@@ -1091,66 +969,62 @@
 
 
 
-<h1 id="conda-uv">conda + uv 함께 사용하기<a class="headerlink" href="#conda-uv" title="Permanent link">&para;</a></h1>
-<h2 id="_1">역할 분담<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<h1 id="project-specific-tips">Project-specific Tips<a class="headerlink" href="#project-specific-tips" title="Permanent link">&para;</a></h1>
+<p>프로젝트에 종속된 팁을 기록합니다. 서버 환경이나 일반 Python 설정과 달리, 특정 프로젝트의 워크플로우·트러블슈팅·노하우를 다룹니다.</p>
+<h2 id="_1">구분 기준<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>도구</th>
-<th>역할</th>
-<th>예시</th>
+<th>구분</th>
+<th>General</th>
+<th>Project</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>conda</strong></td>
-<td>Python 버전, 시스템 라이브러리, C/CUDA 의존성</td>
-<td><code>conda install cudatoolkit</code>, <code>conda create -n myenv python=3.11</code></td>
+<td><strong>대상</strong></td>
+<td>서버 환경, OS, 네트워크, conda/uv 등</td>
+<td>특정 프로젝트의 코드, 데이터, 학습</td>
 </tr>
 <tr>
-<td><strong>uv</strong></td>
-<td>Python 패키지 설치 (pip 대체, 10~100x 빠름)</td>
-<td><code>uv pip install torch transformers</code></td>
+<td><strong>예시</strong></td>
+<td>HTTP Proxy 설정, GPU 테스트, conda 영속화</td>
+<td>QHFlow2 학습 재현, dft-viz 배포</td>
+</tr>
+<tr>
+<td><strong>수명</strong></td>
+<td>서버가 바뀌지 않는 한 유효</td>
+<td>프로젝트 종료 시 아카이브</td>
 </tr>
 </tbody>
 </table>
-<h2 id="_2">설치<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># uv는 conda로 설치 (persistent conda에 포함됨)</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>conda<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>uv
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># 또는</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>pip<span class="w"> </span>install<span class="w"> </span>uv
-</code></pre></div>
-<h2 id="_3">기본 사용법<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<h3 id="conda-uv_1">conda 환경 만들기 + uv로 패키지 설치<a class="headerlink" href="#conda-uv_1" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># 1. conda로 환경 생성 (Python 버전 관리)</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>myproject<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.11<span class="w"> </span>-y
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>conda<span class="w"> </span>activate<span class="w"> </span>myproject
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># 2. uv로 패키지 설치 (pip 대신 사용)</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>torch<span class="w"> </span>transformers<span class="w"> </span>datasets
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
-</code></pre></div>
-<h3 id="base-uv">현재 base 환경에서 uv 사용<a class="headerlink" href="#base-uv" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># conda activate 된 상태에서 그냥 uv pip 사용</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>패키지명
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># 특정 python을 지정할 수도 있음</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--python<span class="w"> </span>/home1/irteam/data-vol1/conda/bin/python<span class="w"> </span>패키지명
-</code></pre></div>
-<h2 id="uv">uv 주요 명령어<a class="headerlink" href="#uv" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>패키지<span class="w">         </span><span class="c1"># 설치 (pip install 대비 10~100x 빠름)</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>req.txt<span class="w">    </span><span class="c1"># requirements.txt로 설치</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>uv<span class="w"> </span>pip<span class="w"> </span>uninstall<span class="w"> </span>패키지<span class="w">       </span><span class="c1"># 제거</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>uv<span class="w"> </span>pip<span class="w"> </span>list<span class="w">                  </span><span class="c1"># 설치된 패키지 목록</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>uv<span class="w"> </span>pip<span class="w"> </span>freeze<span class="w">                </span><span class="c1"># freeze 출력</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>uv<span class="w"> </span>pip<span class="w"> </span>compile<span class="w"> </span>req.in<span class="w">        </span><span class="c1"># lock 파일 생성</span>
-</code></pre></div>
-<h2 id="_4">주의사항<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<ul>
-<li>CUDA 관련 패키지(cudatoolkit 등)는 conda로 설치하는 것이 안정적</li>
-<li>PyTorch는 <code>uv pip install torch</code>로 설치 가능 (pip 인덱스에서 CUDA 빌드 자동 선택)</li>
-<li><code>uv pip</code>은 현재 활성화된 conda 환경의 site-packages에 설치됨</li>
-</ul>
+<h2 id="projects">Projects<a class="headerlink" href="#projects" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>관련 팁</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>QHFlow2</td>
+<td><em>(아직 없음 — 추가 시 <code>projects/qhflow2/</code> 에 작성)</em></td>
+</tr>
+<tr>
+<td>dft-viz</td>
+<td><em>(아직 없음 — 추가 시 <code>projects/dft-viz/</code> 에 작성)</em></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">새 프로젝트 팁 추가</p>
+<ol>
+<li><code>docs/projects/&lt;project-name&gt;/</code> 디렉토리 생성</li>
+<li><code>.md</code> 파일 작성</li>
+<li><code>mkdocs.yml</code>의 <code>nav &gt; Projects</code> 에 항목 추가</li>
+</ol>
+</div>
 
 
 
@@ -1206,10 +1080,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\ud074\ub9bd\ubcf4\ub4dc\uc5d0 \ubcf5\uc0ac\ub428", "clipboard.copy": "\ud074\ub9bd\ubcf4\ub4dc\ub85c \ubcf5\uc0ac", "search.result.more.one": "\uc774 \ubb38\uc11c\uc5d0\uc11c 1\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.more.other": "\uc774 \ubb38\uc11c\uc5d0\uc11c #\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.none": "\uac80\uc0c9\uc5b4\uc640 \uc77c\uce58\ud558\ub294 \ubb38\uc11c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4", "search.result.one": "1\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.other": "#\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.placeholder": "\uac80\uc0c9\uc5b4\ub97c \uc785\ub825\ud558\uc138\uc694", "search.result.term.missing": "\ud3ec\ud568\ub418\uc9c0 \uc54a\uc740 \uac80\uc0c9\uc5b4", "select.version": "\ubc84\uc804 \uc120\ud0dd"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.suggest", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\ud074\ub9bd\ubcf4\ub4dc\uc5d0 \ubcf5\uc0ac\ub428", "clipboard.copy": "\ud074\ub9bd\ubcf4\ub4dc\ub85c \ubcf5\uc0ac", "search.result.more.one": "\uc774 \ubb38\uc11c\uc5d0\uc11c 1\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.more.other": "\uc774 \ubb38\uc11c\uc5d0\uc11c #\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.none": "\uac80\uc0c9\uc5b4\uc640 \uc77c\uce58\ud558\ub294 \ubb38\uc11c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4", "search.result.one": "1\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.other": "#\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.placeholder": "\uac80\uc0c9\uc5b4\ub97c \uc785\ub825\ud558\uc138\uc694", "search.result.term.missing": "\ud3ec\ud568\ub418\uc9c0 \uc54a\uc740 \uac80\uc0c9\uc5b4", "select.version": "\ubc84\uc804 \uc120\ud0dd"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
