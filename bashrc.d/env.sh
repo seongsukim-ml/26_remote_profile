@@ -21,7 +21,7 @@ export VISUAL=vim
 
 # Language / Locale
 export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
+# export LC_ALL=en_US.UTF-8  # uncomment if locale is installed
 
 # CUDA (uncomment and adjust as needed)
 # export CUDA_HOME=/usr/local/cuda
