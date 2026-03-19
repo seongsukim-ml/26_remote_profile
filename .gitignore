@@ -8,8 +8,7 @@ ssh/
 # Google Drive credentials
 gdrive/
 
-# Binaries (large files)
-bin/gdrive
+# Binaries (large files, downloaded at install time)
 bin/rclone
 
 # rclone config (contains tokens)

@@ -19,6 +19,22 @@ The persistent volume at `/home1/irteam/data-vol1` survives container restarts.
 - Package manager: conda + uv (no sudo/apt access)
 - Persistent storage: `/home1/irteam/data-vol1` (Lustre, 140 TiB)
 
+### Persistent Volume Layout
+
+```
+/home1/irteam/data-vol1/
+├── profile/          # Dotfiles & bootstrap (this repo)
+├── conda/            # Conda installation + envs + pkgs (persistent)
+├── projects/         # All code projects (각 프로젝트별 git repo)
+├── datasets/         # 공용 데이터셋 (프로젝트에서 symlink로 참조)
+├── www/              # Web server files
+├── linux_conf/       # Legacy dotfiles (migrated → profile/)
+└── Claude Tips/      # Claude Code 사용 팁 모음
+```
+
+- `projects/`, `datasets/`에는 각각 README.md가 있어 인덱스 역할을 함
+- 새 프로젝트/데이터셋 추가 시 해당 README.md를 업데이트할 것
+
 ## How This Profile Works
 
 ### Bootstrap (run once per new container)
@@ -31,10 +47,11 @@ This single command:
 1. Symlinks `gitconfig` → `~/.gitconfig`
 2. Symlinks `tmux.conf` → `~/.tmux.conf`
 3. Symlinks `vimrc` → `~/.vimrc`
-4. Restores rclone config (Google Drive reconnection)
-5. Injects a loader into `~/.bashrc` that sources all `bashrc.d/*.sh` files
-6. Runs `install.sh` to install missing packages (conda, pip, rclone, Claude Code)
-7. Loads all settings into the current shell session
+4. Symlinks `condarc` → `~/.condarc` (persistent envs_dirs/pkgs_dirs)
+5. Restores rclone config (Google Drive reconnection)
+6. Injects a loader into `~/.bashrc` that sources all `bashrc.d/*.sh` files
+7. Runs `install.sh` to install missing packages (conda, pip, rclone, Claude Code)
+8. Loads all settings into the current shell session
 
 ### Directory Layout
 
@@ -45,6 +62,7 @@ profile/
 ├── gitconfig             # Git user config (→ ~/.gitconfig)
 ├── tmux.conf             # Tmux config (→ ~/.tmux.conf)
 ├── vimrc                 # Vim config (→ ~/.vimrc)
+├── condarc               # Conda config (→ ~/.condarc, persistent envs/pkgs dirs)
 ├── CLAUDE.md             # This file — AI assistant instructions
 ├── README.md             # Human-readable documentation
 ├── .gitignore            # Excludes secrets from git
@@ -60,7 +78,7 @@ profile/
 ## Rules for Modifying This Profile
 
 1. **Add new shell config** → Create or edit a file in `bashrc.d/`. Do not edit `~/.bashrc` directly.
-2. **Add a new package** → Add it to `CONDA_PACKAGES` or `PIP_PACKAGES` in `install.sh`. Use conda for CLI tools, pip for Python libs.
+2. **Add a new package** → Add it to `CONDA_PACKAGES` or `PIP_PACKAGES` in `install.sh`. Use conda for CLI/system tools, `uv pip install` for Python libs.
 3. **Add a custom script** → Place it in `bin/` and `chmod +x`. It's already in PATH.
 4. **Change tmux/vim config** → Edit `tmux.conf` or `vimrc` directly. Changes take effect on next tmux/vim start.
 5. **Never commit secrets** → SSH keys, tokens, credentials go in `.gitignore`. Check before committing.
@@ -106,10 +124,10 @@ profile/
 ## Installed Packages
 
 ### Via conda
-tmux, htop, tree, vim
+tmux, htop, tree, vim, openssh, uv
 
-### Via pip
-gpustat, wandb
+### Via uv (pip)
+gpustat, wandb, torch
 
 ### Via direct download
 rclone (Google Drive / cloud storage)
@@ -130,11 +148,63 @@ Claude Code CLI
 - Each project is a subdirectory with its own git repo and README
 - The project index is maintained in `/home1/irteam/data-vol1/projects/README.md` — update it when creating or archiving a project
 
-### Conda Environment Management
+### Conda + uv 패키지 관리
 
-- Conda is installed at `/home1/irteam/data-vol1/conda/` (persistent across container restarts)
+- Conda: `/home1/irteam/data-vol1/conda/` (persistent, 컨테이너 재시작 후에도 유지)
+- **conda** → Python 버전, 시스템 라이브러리, CUDA 의존성 관리 (`conda install -c conda-forge`)
+- **uv** → Python 패키지 설치 (`uv pip install`, pip 대비 10~100x 빠름)
+- pip 대신 `uv pip install`을 기본으로 사용
+- conda 환경별로 uv가 해당 환경의 site-packages에 설치함
+
+#### 환경 생성 패턴
+```bash
+conda create -n myproject python=3.11 -y
+conda activate myproject
+uv pip install torch transformers   # pip 대신 uv 사용
+uv pip install -r requirements.txt
+```
+
+#### 환경 관리 규칙
 - Create project-specific envs under `/home1/irteam/data-vol1/conda/envs/` so they persist
 - Naming convention: env name matches project directory name (e.g., project `foo` → env `foo`)
+- CUDA 관련 패키지(cudatoolkit 등)는 conda로 설치
+- 일반 Python 패키지는 uv로 설치
+
+### Data Management
+
+- 데이터는 프로젝트 밖의 공용 디렉토리에 저장: `/home1/irteam/data-vol1/datasets/`
+- 프로젝트에서는 심볼릭 링크로 참조: `ln -s /home1/irteam/data-vol1/datasets/<dataset_name> <project>/data/<dataset_name>`
+- 이렇게 하면 여러 프로젝트가 동일 데이터를 중복 없이 공유 가능
+- 데이터는 git에 포함하지 않음 — 프로젝트 `.gitignore`에 `data/` 추가
+- 새 데이터셋 추가 시 `/home1/irteam/data-vol1/datasets/README.md`에 데이터셋 설명 기록
+
+#### 프로젝트 디렉토리 구조 예시
+```
+projects/myproject/
+├── configs/          # YAML config files
+├── data/             # symlinks → /home1/irteam/data-vol1/datasets/*
+│   └── my_dataset -> /home1/irteam/data-vol1/datasets/my_dataset
+├── src/
+├── requirements.txt
+├── .gitignore        # data/ 포함
+└── README.md
+```
+
+### Config Management
+
+- 프로젝트 설정은 YAML 파일을 기본으로 사용
+- 프로젝트 루트에 `configs/` 디렉토리를 두고 용도별로 분리 (e.g., `configs/train.yaml`, `configs/model.yaml`)
+- 실행 시 config 파일을 명시적으로 지정: `python train.py --config configs/train.yaml`
+
+### Package Reproducibility
+
+- 각 프로젝트에 `requirements.txt`를 유지하여 환경 재현 가능하게 관리
+- 패키지 추가/변경 후 반드시 export: `uv pip freeze > requirements.txt`
+- 환경 재생성 시: `conda create -n <project> python=<ver> -y && conda activate <project> && uv pip install -r requirements.txt`
+- CUDA/시스템 의존성이 있으면 `environment.yaml`도 함께 관리:
+  ```bash
+  conda env export --from-history > environment.yaml
+  ```
 
 ## Google Drive (rclone)
 

@@ -1,0 +1,101 @@
+#!/bin/bash
+# ============================================
+# gdrive - Google Drive CLI skill via rclone
+# Usage: gdrive <command> [args...]
+# ============================================
+
+REMOTE="gdrive"
+PROG="$(basename "$0")"
+
+usage() {
+    cat << 'EOF'
+Usage: gdrive <command> [args...]
+
+Commands:
+  ls    [path]              List folders at path (default: root)
+  lsf   [path]             List all files/folders (flat view)
+  find  <pattern>           Search for files by name (e.g. "*.pdf")
+  get   <remote> [local]    Download file/folder (default: current dir)
+  put   <local> [remote]    Upload file/folder (default: root)
+  sync  <local> <remote>    Sync local dir → remote (mirror)
+  mv    <src> <dst>         Move/rename on remote
+  rm    <path>              Delete file/folder on remote
+  mkdir <path>              Create folder on remote
+  link  <path>              Get shareable link
+  size  [path]              Show total size of path (default: root)
+  about                     Show storage usage (total/used/free)
+  help                      Show this help
+
+Examples:
+  gdrive ls
+  gdrive ls "research/data"
+  gdrive find "*.pdf"
+  gdrive get "research/paper.pdf"
+  gdrive get "research/data/" ./local_data/
+  gdrive put ./results/ "research/results"
+  gdrive sync ./data/ "backup/data"
+  gdrive about
+EOF
+}
+
+case "${1:-help}" in
+    ls)
+        rclone lsd "$REMOTE:${2:-}" 2>&1
+        ;;
+    lsf)
+        rclone lsf "$REMOTE:${2:-}" --max-depth 1 2>&1
+        ;;
+    find)
+        [ -z "$2" ] && { echo "Usage: $PROG find <pattern>"; exit 1; }
+        rclone lsf "$REMOTE:" --recursive --include "$2" 2>&1 | head -100
+        ;;
+    get)
+        [ -z "$2" ] && { echo "Usage: $PROG get <remote_path> [local_path]"; exit 1; }
+        dest="${3:-.}"
+        echo "⬇ Downloading $REMOTE:$2 → $dest"
+        rclone copy "$REMOTE:$2" "$dest" --progress
+        ;;
+    put)
+        [ -z "$2" ] && { echo "Usage: $PROG put <local_path> [remote_path]"; exit 1; }
+        echo "⬆ Uploading $2 → $REMOTE:${3:-/}"
+        rclone copy "$2" "$REMOTE:${3:-}" --progress
+        ;;
+    sync)
+        [ -z "$2" ] || [ -z "$3" ] && { echo "Usage: $PROG sync <local_dir> <remote_path>"; exit 1; }
+        echo "⟳ Syncing $2 → $REMOTE:$3"
+        rclone sync "$2" "$REMOTE:$3" --progress
+        ;;
+    mv)
+        [ -z "$2" ] || [ -z "$3" ] && { echo "Usage: $PROG mv <src> <dst>"; exit 1; }
+        rclone moveto "$REMOTE:$2" "$REMOTE:$3"
+        echo "Moved $REMOTE:$2 → $REMOTE:$3"
+        ;;
+    rm)
+        [ -z "$2" ] && { echo "Usage: $PROG rm <path>"; exit 1; }
+        read -p "Delete $REMOTE:$2? [y/N] " confirm
+        [[ "$confirm" =~ ^[yY]$ ]] && rclone purge "$REMOTE:$2" && echo "Deleted." || echo "Cancelled."
+        ;;
+    mkdir)
+        [ -z "$2" ] && { echo "Usage: $PROG mkdir <path>"; exit 1; }
+        rclone mkdir "$REMOTE:$2"
+        echo "Created $REMOTE:$2"
+        ;;
+    link)
+        [ -z "$2" ] && { echo "Usage: $PROG link <path>"; exit 1; }
+        rclone link "$REMOTE:$2" 2>&1
+        ;;
+    size)
+        rclone size "$REMOTE:${2:-}" 2>&1
+        ;;
+    about)
+        rclone about "$REMOTE:" 2>&1
+        ;;
+    help|--help|-h)
+        usage
+        ;;
+    *)
+        echo "Unknown command: $1"
+        usage
+        exit 1
+        ;;
+esac

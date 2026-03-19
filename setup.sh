@@ -61,7 +61,7 @@ else
     echo "[setup] ✓ bashrc loader already present"
 fi
 
-# ---- 5. Link rclone config ----
+# ---- 6. Link rclone config ----
 RCLONE_CONF_BACKUP="$PROFILE_ROOT/rclone/rclone.conf"
 if [ -f "$RCLONE_CONF_BACKUP" ]; then
     mkdir -p "$HOME/.config/rclone"
@@ -73,13 +73,13 @@ if [ -f "$RCLONE_CONF_BACKUP" ]; then
     fi
 fi
 
-# ---- 6. Install packages ----
+# ---- 7. Install packages ----
 if [ -f "$PROFILE_ROOT/install.sh" ]; then
     echo "[setup] Running install.sh..."
     bash "$PROFILE_ROOT/install.sh"
 fi
 
-# ---- 7. Load profile into current session ----
+# ---- 8. Load profile into current session ----
 for f in "$PROFILE_ROOT"/bashrc.d/*.sh; do
     [ -r "$f" ] && source "$f"
 done

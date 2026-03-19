@@ -1,0 +1,121 @@
+#!/bin/bash
+# ============================================
+# storage - Check storage usage across all remotes and local volumes
+# Usage: storage [remote_name]
+# ============================================
+
+PROG="$(basename "$0")"
+
+separator() {
+    printf '%.0s─' {1..50}
+    echo
+}
+
+print_bar() {
+    local used=$1 total=$2 width=30
+    if [ "$total" -gt 0 ] 2>/dev/null; then
+        local pct=$((used * 100 / total))
+        local filled=$((pct * width / 100))
+        local empty=$((width - filled))
+        printf '  ['
+        printf '%.0s█' $(seq 1 "$filled" 2>/dev/null)
+        printf '%.0s░' $(seq 1 "$empty" 2>/dev/null)
+        printf '] %d%%\n' "$pct"
+    fi
+}
+
+check_remote() {
+    local name=$1 label=$2
+    echo "☁  $label"
+    local output
+    output=$(rclone about "$name:" 2>&1)
+    if [ $? -eq 0 ]; then
+        echo "$output" | sed 's/^/  /'
+        # Extract used/total for bar
+        local total_bytes used_bytes
+        total_bytes=$(echo "$output" | grep "^Total:" | awk '{print $2}' | tr -d ' ')
+        used_bytes=$(echo "$output" | grep "^Used:" | awk '{print $2}' | tr -d ' ')
+        local total_unit used_unit
+        total_unit=$(echo "$output" | grep "^Total:" | awk '{print $3}')
+        used_unit=$(echo "$output" | grep "^Used:" | awk '{print $3}')
+        # Simple percentage from rclone output
+        if echo "$output" | grep -q "^Total:" && echo "$output" | grep -q "^Used:"; then
+            local total_gb used_gb
+            total_gb=$(echo "$output" | grep "^Total:" | awk '{
+                v=$2; u=$3;
+                if(u=="TiB") v=v*1024;
+                else if(u=="MiB") v=v/1024;
+                else if(u=="KiB") v=v/1048576;
+                print int(v)
+            }')
+            used_gb=$(echo "$output" | grep "^Used:" | awk '{
+                v=$2; u=$3;
+                if(u=="TiB") v=v*1024;
+                else if(u=="MiB") v=v/1024;
+                else if(u=="KiB") v=v/1048576;
+                print int(v)
+            }')
+            print_bar "$used_gb" "$total_gb"
+        fi
+    else
+        echo "  (unavailable)"
+    fi
+    echo
+}
+
+check_local() {
+    local path=$1 label=$2
+    echo "💾 $label"
+    local line
+    line=$(df -h "$path" 2>/dev/null | tail -1)
+    if [ -n "$line" ]; then
+        local size used avail pct
+        size=$(echo "$line" | awk '{print $2}')
+        used=$(echo "$line" | awk '{print $3}')
+        avail=$(echo "$line" | awk '{print $4}')
+        pct=$(echo "$line" | awk '{print $5}' | tr -d '%')
+        printf '  Total: %s\n  Used:  %s\n  Free:  %s\n' "$size" "$used" "$avail"
+        print_bar "$pct" 100
+    else
+        echo "  (unavailable)"
+    fi
+    echo
+}
+
+# If a specific remote is given
+if [ -n "$1" ] && [ "$1" != "--help" ] && [ "$1" != "-h" ] && [ "$1" != "help" ]; then
+    check_remote "$1" "$1"
+    exit 0
+fi
+
+if [ "$1" = "--help" ] || [ "$1" = "-h" ] || [ "$1" = "help" ]; then
+    cat << 'EOF'
+Usage: storage [remote_name]
+
+Show storage usage for all configured remotes and local volumes.
+Optionally specify a single remote name to check only that one.
+
+Examples:
+  storage              # Show all
+  storage gdrive       # Show only Google Drive
+  storage dropbox      # Show only Dropbox
+EOF
+    exit 0
+fi
+
+echo
+echo "  Storage Usage Report"
+separator
+
+# Cloud remotes
+check_remote "gdrive" "Google Drive"
+check_remote "dropbox" "Dropbox (SPML Team)"
+
+separator
+
+# Local volumes
+check_local "/" "Local Disk (/)"
+check_local "/home1/irteam/data-vol1" "Persistent Volume (data-vol1)"
+
+separator
+echo "  $(date '+%Y-%m-%d %H:%M:%S')"
