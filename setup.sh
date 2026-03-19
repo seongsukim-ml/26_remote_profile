@@ -16,7 +16,19 @@ if [ -f "$PROFILE_ROOT/gitconfig" ]; then
     echo "[setup] ✓ gitconfig linked"
 fi
 
-# ---- 2. Inject bashrc loader into ~/.bashrc ----
+# ---- 2. Link tmux.conf ----
+if [ -f "$PROFILE_ROOT/tmux.conf" ]; then
+    ln -sf "$PROFILE_ROOT/tmux.conf" "$HOME/.tmux.conf"
+    echo "[setup] ✓ tmux.conf linked"
+fi
+
+# ---- 3. Link vimrc ----
+if [ -f "$PROFILE_ROOT/vimrc" ]; then
+    ln -sf "$PROFILE_ROOT/vimrc" "$HOME/.vimrc"
+    echo "[setup] ✓ vimrc linked"
+fi
+
+# ---- 4. Inject bashrc loader into ~/.bashrc ----
 if ! grep -q "$MARKER" "$HOME/.bashrc" 2>/dev/null; then
     cat >> "$HOME/.bashrc" << 'BASHRC_BLOCK'
 
@@ -34,13 +46,13 @@ else
     echo "[setup] ✓ bashrc loader already present"
 fi
 
-# ---- 3. Install packages ----
+# ---- 5. Install packages ----
 if [ -f "$PROFILE_ROOT/install.sh" ]; then
     echo "[setup] Running install.sh..."
     bash "$PROFILE_ROOT/install.sh"
 fi
 
-# ---- 4. Load profile into current session ----
+# ---- 6. Load profile into current session ----
 for f in "$PROFILE_ROOT"/bashrc.d/*.sh; do
     [ -r "$f" ] && source "$f"
 done

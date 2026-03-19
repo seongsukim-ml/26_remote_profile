@@ -18,6 +18,7 @@ alias gs='git status'
 alias gl='git log --oneline --graph -20'
 alias gd='git diff'
 alias ga='git add'
+alias gb='git branch'
 alias gc='git commit'
 alias gp='git push'
 alias gpull='git pull'
@@ -35,6 +36,12 @@ alias mv='mv -i'
 # nvidia
 alias nv='nvidia-smi'
 alias nvw='watch -n 1 nvidia-smi'
+alias watch-gpu='watch -d -n 0.5 nvidia-smi'
+
+# tmux
+alias tmux-kill='tmux kill-session -t '
+alias tmux-gpu='tmux at -t GPU'
+alias tmux-jupyter='tmux at -t jupyter'
 
 # python
 alias py='python'
