@@ -1,0 +1,41 @@
+#!/bin/bash
+# ============================================
+# Pre-commit hook: auto-encrypt secrets/
+# If secrets/ has changed, re-encrypt and stage secrets.enc
+# ============================================
+
+PROFILE_ROOT="/home1/irteam/data-vol1/profile"
+SECRETS_DIR="$PROFILE_ROOT/secrets"
+ENCRYPTED_FILE="$PROFILE_ROOT/secrets.enc"
+KEYFILE="/home1/irteam/data-vol1/.secrets_key"
+
+# Check if secrets/ has any files newer than secrets.enc
+if [ -d "$SECRETS_DIR" ] && [ -n "$(ls -A "$SECRETS_DIR" 2>/dev/null)" ]; then
+    NEEDS_UPDATE=false
+
+    if [ ! -f "$ENCRYPTED_FILE" ]; then
+        NEEDS_UPDATE=true
+    else
+        # Check if any secret file is newer than the encrypted file
+        for f in "$SECRETS_DIR"/*; do
+            if [ "$f" -nt "$ENCRYPTED_FILE" ]; then
+                NEEDS_UPDATE=true
+                break
+            fi
+        done
+    fi
+
+    if [ "$NEEDS_UPDATE" = true ]; then
+        echo "[pre-commit] secrets/ changed, re-encrypting..."
+
+        if [ ! -f "$KEYFILE" ]; then
+            echo "[pre-commit] ERROR: No keyfile found at $KEYFILE"
+            echo "  Run: secrets-lock --save-key"
+            exit 1
+        fi
+
+        "$PROFILE_ROOT/bin/secrets-lock"
+        git add "$ENCRYPTED_FILE"
+        echo "[pre-commit] secrets.enc updated and staged."
+    fi
+fi
