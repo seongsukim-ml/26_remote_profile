@@ -48,7 +48,7 @@ grid:           # level, prune, radi_method, becke_scheme, radii_adjust, atom_gr
 density_fitting: # enabled, auxbasis, auxbasis_resolved, method
 gpu:            # enabled, backend, gpu_model, precision, cuda/cupy version
 system:         # charge, spin, multiplicity, units, symmetry
-orbital:        # convention_name, atom_to_orbitals, max_block_size
+orbital:        # convention_name, atom_to_shells, max_block_size
 reference_hamiltonian:  # xc_functional, init_guess (GT와 다를 수 있음!)
 gradient:       # computed, grid_response
 provenance:     # python/numpy/scipy/torch version, integral_library, blas_library
@@ -141,6 +141,70 @@ meta.set("density_fitting.enabled", True)
 meta.set("density_fitting.auxbasis", "cc-pvtz-jkfit")
 meta.save("my_metadata.yaml")
 ```
+
+## 단위 규약 (Unit Convention)
+
+DFT 데이터에서 사용하는 단위를 일관되게 정리합니다. 프로젝트 간, 코드 간 단위 혼동은 흔한 버그 원인입니다.
+
+### 기본 단위 체계
+
+| 물리량 | 저장 단위 | SI 환산 | 비고 |
+|--------|-----------|---------|------|
+| **Position** | **Angstrom** (Å) | 1 Å = 10⁻¹⁰ m | PySCF 내부는 Bohr → `from_pyscf()`에서 자동 변환 |
+| **Energy** | **Hartree** (Eₕ) | 1 Eₕ = 27.2114 eV | total_energy, homo, lumo, band_energy 모두 Hartree |
+| **Force** | **Hartree/Bohr** | 1 Eₕ/a₀ = 51.4221 eV/Å | gradient 기본 단위 |
+| **행렬 원소 (H, S, D)** | **Hartree** | | overlap S는 무차원이지만 동일 convention |
+| **HOMO-LUMO gap** | **eV** | | `homo_lumo_gap`만 eV 반환 (× 27.2114) |
+
+### 자주 쓰는 변환 상수
+
+```python
+# 에너지
+HARTREE_TO_EV = 27.211386245988        # 1 Hartree → eV
+HARTREE_TO_KCAL = 627.5094740631       # 1 Hartree → kcal/mol
+EV_TO_KCAL = 23.060541945329           # 1 eV → kcal/mol
+
+# 거리
+BOHR_TO_ANG = 0.529177210903          # 1 Bohr → Angstrom
+ANG_TO_BOHR = 1.8897259886            # 1 Angstrom → Bohr
+
+# 힘 (gradient → force: 부호 반전)
+HARTREE_BOHR_TO_EV_ANG = 51.42206313  # 1 Hartree/Bohr → eV/Å
+```
+
+### template.yaml에서의 단위 필드
+
+```yaml
+system:
+  units:
+    position: "angstrom"    # 좌표 단위
+    energy: "hartree"       # 에너지 단위
+    force: "hartree/bohr"   # 힘(gradient) 단위
+```
+
+!!! warning "단위 혼동 주의"
+    - PySCF 내부 좌표는 **Bohr**이지만, `from_pyscf()`는 **Angstrom**으로 변환하여 저장
+    - `mol.atom_coords()` → Bohr, `mol.atom_coords(unit="ANG")` → Angstrom
+    - `homo_lumo` 속성은 **Hartree**, `homo_lumo_gap`만 **eV** — 일관되지 않으므로 사용 시 확인
+    - MD17 등 외부 데이터셋은 자체 단위 규약이 있을 수 있음 → 반드시 메타데이터 확인
+
+!!! tip "ML 학습 시 단위 선택"
+    - 대부분의 MLIP (MACE, NequIP 등)은 **eV + Å** 단위를 사용
+    - QHFlow2/QH9 데이터는 **Hartree + Å** (행렬) + **Hartree/Bohr** (force)
+    - 학습 전 단위 통일 필수 — loss weight 해석에도 영향
+
+### Orbital m-ordering convention
+
+행렬(H, S, D)의 orbital index 순서는 코드마다 다르다.
+자세한 내용은 [PySCF vs e3nn Convention](../projects/pyscf_e3nn_convention.md) 참조.
+
+| Convention | l=1 (p) | l=2 (d) | 사용처 |
+|------------|---------|---------|--------|
+| **pyscf** | [+1,-1,0] (px,py,pz) | [0,+1,-1,+2,-2] | PySCF, QH9, QHFlow2 |
+| **e3nn** | [-1,0,+1] | [-2,-1,0,+1,+2] | e3nn, eSEN, MACE |
+
+`dft-dataset` 프로젝트의 `Molecule` dataclass는 `BasisInfo.convention` 필드에 현재 ordering을
+기록하고, `mol.to_convention("e3nn")` 또는 `mol.save_npz(convention="e3nn")`으로 변환 가능.
 
 ## 발견된 주요 이슈
 

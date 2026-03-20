@@ -40,10 +40,11 @@ nav:
     - Data:
       - 디렉토리 구조: data/directory_structure.md
       - DFT Metadata Template: data/dft_metadata.md
+      - Dataset Metadata Convention: data/dataset_metadata_convention.md
   - Projects:
     - "(프로젝트별 팁은 여기에 추가)": projects/index.md
     - PySCF vs e3nn Convention: projects/pyscf_e3nn_convention.md
-    - DFT Matrix Template: projects/dft_matrix_template.md
+    - dft-dataset Toolbox: projects/dft_matrix_template.md
     - Irrep Decomposition Report: projects/irrep_decompose_report.md
     - PySCF Basis & Functionals: projects/pyscf_basis_and_functionals.md
 

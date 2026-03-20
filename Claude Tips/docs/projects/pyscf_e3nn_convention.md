@@ -141,12 +141,74 @@ Full CG 대신 local frame에서 m-diagonal 예측 후 Wigner D로 복원:
 
 Diagonal block(ii)은 변경 없이 기존 CG 유지 (이미 l_in=0 지배적이라 저렴).
 
-## QHFlow2 관련 파일
+## dft-dataset 프로젝트: Convention 변환 유틸리티
+
+`/home1/irteam/data-vol1/projects/dft-dataset/src/conventions.py`에
+convention 정의와 변환 로직이 독립 모듈로 구현되어 있다.
+
+### m-ordering 정의
+
+| Convention | l=0 | l=1 | l=2 | l=3 |
+|------------|-----|-----|-----|-----|
+| **pyscf** | [0] | [+1,-1,0] | [0,+1,-1,+2,-2] | [0,+1,-1,+2,-2,+3,-3] |
+| **e3nn** | [0] | [-1,0,+1] | [-2,-1,0,+1,+2] | [-3,-2,-1,0,+1,+2,+3] |
+
+l=1만 다르고 (PySCF 비표준), l≥2는 순서 자체가 다름 (interleaved vs ascending).
+
+### 핵심 API
+
+```python
+from conventions import get_m_order, shell_reorder, build_reorder_indices
+
+# Shell 단위 permutation (캐싱됨)
+get_m_order("pyscf", 1)              # [1, -1, 0]
+shell_reorder(1, "pyscf", "e3nn")    # (1, 2, 0)
+shell_reorder(2, "pyscf", "e3nn")    # (4, 2, 0, 1, 3)
+
+# 분자 전체 reorder index
+idx = build_reorder_indices(
+    atomic_numbers,
+    atom_to_shells={"1": "ssp", "8": "sssppd"},
+    src="pyscf", dst="e3nn",
+)
+H_e3nn = H_pyscf[np.ix_(idx, idx)]
+```
+
+### Molecule 통합 사용
+
+```python
+from molecule import Molecule, BasisInfo
+
+mol = Molecule.load_npz("sample.npz")
+mol.basis_info = BasisInfo.from_name("def2-svp")  # convention="pyscf" (기본)
+
+# 변환
+mol_e3nn = mol.to_convention("e3nn")
+
+# 저장 시 변환
+mol.save_npz("out.npz", convention="e3nn")          # e3nn으로 변환 후 저장
+mol.save_npz("out.npz", packed=True, convention="e3nn")  # 압축 + 변환
+```
+
+!!! tip "BasisInfo에 convention이 저장됨"
+    `save_npz()`/`load_npz()` 시 `basis_info.convention` 필드가 함께 저장되므로,
+    로드할 때 현재 데이터가 어느 convention인지 항상 알 수 있다.
+
+## 관련 파일
+
+### dft-dataset (재사용 가능 유틸리티)
 
 | 파일 | 역할 |
 |------|------|
-| `src/common/orbital_conventions.py` | convention 정의 |
-| `src/common/matrix_transforms.py` | 변환 엔진 |
-| `src/models/QHFlow.py` | 좌표 permutation |
-| `src/models/layers.py` | Expansion 클래스 (CG tensor product) |
-| `src/utils.py` | 간단한 Expansion (weight 없는 버전) |
+| `projects/dft-dataset/src/conventions.py` | convention 정의 + reorder 엔진 |
+| `projects/dft-dataset/src/molecule.py` | `Molecule.to_convention()`, `BasisInfo` |
+
+### QHFlow2 (프로젝트 내부용)
+
+| 파일 | 역할 |
+|------|------|
+| `projects/QHFlow2/src/common/orbital_conventions.py` | convention 정의 |
+| `projects/QHFlow2/src/common/matrix_transforms.py` | 변환 엔진 |
+| `projects/QHFlow2/src/models/QHFlow.py` | 좌표 permutation |
+| `projects/QHFlow2/src/models/layers.py` | Expansion 클래스 (CG tensor product) |
+| `projects/QHFlow2/src/utils.py` | 간단한 Expansion (weight 없는 버전) |

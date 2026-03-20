@@ -70,6 +70,7 @@ projects/<name>/
 - 데이터 저장: `/home1/irteam/data-vol1/datasets/`
 - 프로젝트에서 symlink로 참조: `ln -s /home1/irteam/data-vol1/datasets/<name> data/<name>`
 - 데이터셋 인덱스: `/home1/irteam/data-vol1/datasets/README.md`에 기록
+- **각 데이터셋에 `metadata.yaml` 필수** (DFT → `dft_metadata/template.yaml` 사용, 비-DFT → 간소화 스키마)
 - `data/`는 git에 포함하지 않음
 
 ### Config Management

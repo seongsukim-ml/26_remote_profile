@@ -235,17 +235,171 @@ def normalize(coeffs, stats):
 
 ---
 
-## 6. 파일 위치
+## 6. Complexity 분석
+
+### 6.1 이론적 복잡도
+
+Flatten/reconstruct는 각각 matrix-vector multiply $C^T \cdot \text{vec}(H)$ 한 번:
+
+$$O\big((2l_1+1)^2 \cdot (2l_2+1)^2\big)$$
+
+| (l1, l2) | Block 크기 | vec 차원 | FLOPs |
+|:---------:|:---------:|:-------:|------:|
+| (1,1) p-p | 3×3 | 9 | 162 |
+| (2,2) d-d | 5×5 | 25 | 1,250 |
+| (3,3) f-f | 7×7 | 49 | 4,802 |
+| (4,4) g-g | 9×9 | 81 | 13,122 |
+
+Neural network forward (~수백만 FLOPs) 대비 무시할 수 있는 수준.
+
+### 6.2 실측 (CPU, Batch=256)
+
+| (l1, l2) | flatten+reconstruct | element MAE | 배율 |
+|:---------:|:------------------:|:-----------:|:----:|
+| (1,1) p-p | 31 μs | 9 μs | 3.4x |
+| (2,2) d-d | 461 μs | 12 μs | 38x |
+| (3,3) f-f | 1,688 μs | 37 μs | 46x |
+
+d-d 이상에서 배치 처리 시 overhead가 커지지만, def2-SVP (최대 d-orbital)에서는 training step 총 시간의 **< 0.5%**. **Loss에서만 사용하고 model 내부에는 넣지 않는 것**이 적절.
+
+---
+
+## 7. Matrix Output Loss: Vision과의 대응
+
+### 7.1 Element-wise MAE/MSE의 한계
+
+Vision에서 pixel-wise MSE가 blurry한 결과를 내는 것과 동일하게, Hamiltonian element-wise MAE는 **큰 블록(s-s)이 gradient를 지배**하고, 작은 블록(d-d)의 anisotropy가 학습되지 않는 문제가 있음.
+
+### 7.2 Vision → Hamiltonian 번역
+
+| Vision | Hamiltonian |
+|--------|------------|
+| Pixel MSE | Element-wise MAE/MSE (현재) |
+| Perceptual Loss (VGG feat) | WALoss (eigenspace projection) |
+| **FFT Frequency Loss** | **Irrep-weighted Loss (CG decompose)** |
+| Multi-scale Pyramid | Block-wise hierarchical Loss |
+| SSIM | Spectral similarity |
+| Min-SNR weighting | Time-dependent flow weight |
+
+### 7.3 Irrep-weighted Loss (제안)
+
+Vision에서 FFT frequency decomposition → per-frequency weighting이 큰 개선을 줬듯이, Hamiltonian에서 CG decomposition → per-irrep weighting도 같은 효과를 기대:
+
+| | 저주파 (smooth) | 고주파 (edge/texture) |
+|--|----------------|---------------------|
+| **Vision (FFT)** | DC component | High-freq details |
+| **Hamiltonian (CG)** | L=0 (isotropic, on-site) | L>0 (anisotropy, crystal field) |
+| **Problem** | MSE에서 고주파 무시됨 | MAE에서 L>0 무시됨 |
+| **Solution** | Per-freq weighting | Per-irrep weighting |
+
+```python
+# Irrep-weighted loss
+loss = 0
+for L, (h_pred, h_target) in irrep_pairs.items():
+    loss += weight[L] * (h_pred - h_target).pow(2).mean()
+```
+
+---
+
+## 8. MoE-style MultiHeadExpansion
+
+### 8.1 동기
+
+QHFlow2의 현재 Expansion layer는 **모든 원소에 동일한 output_irrep** (def2-SVP: "3x0e + 2x1e + 1x2e", 14-dim)을 사용. 원소마다 실제 orbital 구조가 다르므로:
+
+| 원소 | 실제 orbital | output dim | 14×14에서 낭비 |
+|------|-------------|:----------:|:-------------:|
+| H (sp) | 2x0e + 1x1e | 5 | 87% |
+| C (spd) | 3x0e + 2x1e + 1x2e | 14 | 0% |
+| Fe (spdf) | 4x0e + 3x1e + 2x2e + 1x3e | 30 | **불가능** |
+
+spdf 원소(transition metal)를 지원하려면 output을 30-dim으로 키워야 하고, 그러면 H의 낭비가 더 커짐.
+
+### 8.2 설계
+
+```
+모든 atom → 공유 backbone (message passing)
+         → 원소군별 output head (routing by Z, deterministic)
+            sp   head → 5×5    block
+            spd  head → 14×14  block
+            spdf head → 30×30  block
+```
+
+- **Routing은 deterministic** (원자 번호 → 그룹 매핑 테이블)
+- Backbone (GNN)은 공유, **Expansion만 분리**
+- Off-diagonal (ij) block: group pair별 Expansion → 3 groups면 6 pair combinations
+
+### 8.3 검증 결과
+
+모든 테스트 통과:
+
+| Test | 결과 |
+|------|:----:|
+| Output shape (5×5, 14×14, 30×30) | ✓ |
+| **Equivariance** (모든 그룹 ~1e-16) | ✓ |
+| Cross-group pair blocks (8종 조합) | ✓ |
+| Gradient flow | ✓ |
+| Single head와 bit-identical (spd 그룹) | ✓ |
+
+### 8.4 Throughput (H200 GPU)
+
+**Naive 구현** (boolean mask + 별도 forward):
+
+| Scenario | N | Single | Naive Multi | Fast/Single |
+|----------|:-:|:------:|:-----------:|:-----------:|
+| Pure organic (HCNO) | 38 | 10.0ms | 18.9ms | 0.53x |
+| TM complex | 31 | 11.0ms | 35.0ms | 0.31x |
+
+→ **느림.** 원인: group별 routing overhead + small-batch GPU 비활용.
+
+**최적화 (FastExpansion: w3j 캐싱 + pre-sort)**:
+
+| Scenario | N | Single | Fast Multi | Fast/Single |
+|----------|:-:|:------:|:----------:|:-----------:|
+| Pure organic (HCNO) | 38 | 10.0ms | **9.6ms** | **0.97x** |
+| Small organic (EtOH) | 9 | 8.8ms | **8.5ms** | **0.97x** |
+| **H-only** | 50 | 9.5ms | **3.3ms** | **0.35x** |
+| **C-only** | 30 | 9.3ms | **5.6ms** | **0.61x** |
+| TM complex | 31 | 11.0ms | 18.3ms | 1.66x |
+
+### 8.5 분석
+
+**Expansion 내부의 Python loop가 핵심 병목:**
+
+| Group | Output irreps | CG Instructions | CUDA Kernels |
+|-------|:------------:|:---------------:|:------------:|
+| sp | 2 | 6 | 12 |
+| spd | 3 | 19 | 38 |
+| spdf | 4 | 40 | 80 |
+| **합계 (multi)** | — | 65 | **130** |
+| **단일 (spd)** | 3 | 19 | **38** |
+
+Multi-head는 kernel 수가 3.4배 → GPU parallelism으로 상쇄되지 않음.
+
+### 8.6 실용적 판단
+
+| 상황 | 추천 |
+|------|------|
+| def2-SVP, 유기 분자만 | Single head (14-dim) — 충분히 빠르고 간단 |
+| H가 많은 분자 (50%+) | Fast Multi 유리 (sp head가 3x 빠름) |
+| Transition metal 소수 + 유기 다수 | 2-group 분리 (sp / spd+) 최적 |
+| def2-TZVP 이상 확장 시 | Multi-head 도입 검토 (padding 낭비 커짐) |
+
+---
+
+## 9. 파일 위치
 
 | 파일 | 설명 |
 |------|------|
 | `QHFlow2/src/common/irrep_decompose.py` | `IrrepDecomposer` 클래스 |
 | `QHFlow2/tests/test_irrep_decompose.py` | 8개 테스트 (equivariance 증명 포함) |
 | `QHFlow2/tests/test_equivariant_normalization.py` | Normalization equivariance 검증 |
+| `QHFlow2/experiments/test_multihead_expansion.py` | MoE MultiHead 기본 검증 (v1) |
+| `QHFlow2/experiments/test_multihead_v2.py` | FastExpansion + throughput 벤치마크 (v2) |
 
 ---
 
-## 7. 참고 문헌
+## 10. 참고 문헌
 
 - **SLEM**: Zhu et al., "Learning Local Equivariant Representations for Quantum Operators", ICLR 2025. [arXiv:2407.06053](https://arxiv.org/abs/2407.06053)
 - **MACE-H**: "Equivariant Electronic Hamiltonian Prediction with Many-Body Message Passing", 2025. [arXiv:2508.15108](https://arxiv.org/abs/2508.15108)
