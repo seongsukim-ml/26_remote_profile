@@ -2,13 +2,17 @@
 
 Claude와 함께 서버를 운영하면서 알게 된 것들을 기록하는 지식 베이스입니다.
 
+!!! info "Quick Links"
+    - [DFT Monitor Dashboard](https://kpb4r.mlxp.ncloud.com/notebook/p-material-foundation/test3/proxy/9100/){target=_blank} — Samples, Projects, Monitor, Reference
+    - [Projects Overview](https://kpb4r.mlxp.ncloud.com/notebook/p-material-foundation/test3/proxy/9100/projects.html){target=_blank} — 프로젝트 진행 현황
+
 ## 이 사이트의 역할
 
 | 항목 | 설명 |
 |------|------|
 | **무엇을** | Claude와의 대화에서 나온 유용한 설정, 해결법, 노하우 |
 | **왜** | 같은 문제를 다시 만났을 때 빠르게 참고하기 위해 |
-| **어디서** | `/home1/irteam/data-vol1/Claude Tips/docs/` 에 마크다운으로 저장 |
+| **어디서** | `/home1/irteam/data-vol1/profile/Claude Tips/docs/` 에 마크다운으로 저장 |
 | **어떻게** | MkDocs Material로 빌드 → VSCode Proxy로 브라우저에서 열람 |
 
 !!! tip "새 팁 추가 방법"

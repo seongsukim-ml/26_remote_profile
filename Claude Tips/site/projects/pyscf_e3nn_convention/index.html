@@ -703,6 +703,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/dataset_metadata_convention/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dataset Metadata Convention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1056,13 +1084,91 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#qhflow2" class="md-nav__link">
+  <a href="#dft-dataset-convention" class="md-nav__link">
     <span class="md-ellipsis">
       
-        QHFlow2 관련 파일
+        dft-dataset 프로젝트: Convention 변환 유틸리티
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="dft-dataset 프로젝트: Convention 변환 유틸리티">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#m-ordering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        m-ordering 정의
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        핵심 API
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#molecule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Molecule 통합 사용
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        관련 파일
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="관련 파일">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dft-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dft-dataset (재사용 가능 유틸리티)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#qhflow2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        QHFlow2 (프로젝트 내부용)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1089,7 +1195,7 @@
   <span class="md-ellipsis">
     
   
-    DFT Matrix Template
+    dft-dataset Toolbox
   
 
     
@@ -1382,13 +1488,91 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#qhflow2" class="md-nav__link">
+  <a href="#dft-dataset-convention" class="md-nav__link">
     <span class="md-ellipsis">
       
-        QHFlow2 관련 파일
+        dft-dataset 프로젝트: Convention 변환 유틸리티
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="dft-dataset 프로젝트: Convention 변환 유틸리티">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#m-ordering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        m-ordering 정의
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        핵심 API
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#molecule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Molecule 통합 사용
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        관련 파일
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="관련 파일">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dft-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dft-dataset (재사용 가능 유틸리티)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#qhflow2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        QHFlow2 (프로젝트 내부용)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1670,7 +1854,74 @@ GPU에서 CUDA kernel launch가 누적되어 오히려 CPU보다 느림.</p>
 </tbody>
 </table>
 <p>Diagonal block(ii)은 변경 없이 기존 CG 유지 (이미 l_in=0 지배적이라 저렴).</p>
-<h2 id="qhflow2">QHFlow2 관련 파일<a class="headerlink" href="#qhflow2" title="Permanent link">&para;</a></h2>
+<h2 id="dft-dataset-convention">dft-dataset 프로젝트: Convention 변환 유틸리티<a class="headerlink" href="#dft-dataset-convention" title="Permanent link">&para;</a></h2>
+<p><code>/home1/irteam/data-vol1/projects/dft-dataset/src/conventions.py</code>에
+convention 정의와 변환 로직이 독립 모듈로 구현되어 있다.</p>
+<h3 id="m-ordering">m-ordering 정의<a class="headerlink" href="#m-ordering" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Convention</th>
+<th>l=0</th>
+<th>l=1</th>
+<th>l=2</th>
+<th>l=3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>pyscf</strong></td>
+<td>[0]</td>
+<td>[+1,-1,0]</td>
+<td>[0,+1,-1,+2,-2]</td>
+<td>[0,+1,-1,+2,-2,+3,-3]</td>
+</tr>
+<tr>
+<td><strong>e3nn</strong></td>
+<td>[0]</td>
+<td>[-1,0,+1]</td>
+<td>[-2,-1,0,+1,+2]</td>
+<td>[-3,-2,-1,0,+1,+2,+3]</td>
+</tr>
+</tbody>
+</table>
+<p>l=1만 다르고 (PySCF 비표준), l≥2는 순서 자체가 다름 (interleaved vs ascending).</p>
+<h3 id="api">핵심 API<a class="headerlink" href="#api" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">conventions</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_m_order</span><span class="p">,</span> <span class="n">shell_reorder</span><span class="p">,</span> <span class="n">build_reorder_indices</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># Shell 단위 permutation (캐싱됨)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">get_m_order</span><span class="p">(</span><span class="s2">&quot;pyscf&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>              <span class="c1"># [1, -1, 0]</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">shell_reorder</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;pyscf&quot;</span><span class="p">,</span> <span class="s2">&quot;e3nn&quot;</span><span class="p">)</span>    <span class="c1"># (1, 2, 0)</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">shell_reorder</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;pyscf&quot;</span><span class="p">,</span> <span class="s2">&quot;e3nn&quot;</span><span class="p">)</span>    <span class="c1"># (4, 2, 0, 1, 3)</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1"># 분자 전체 reorder index</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="n">idx</span> <span class="o">=</span> <span class="n">build_reorder_indices</span><span class="p">(</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="n">atomic_numbers</span><span class="p">,</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="n">atom_to_shells</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;ssp&quot;</span><span class="p">,</span> <span class="s2">&quot;8&quot;</span><span class="p">:</span> <span class="s2">&quot;sssppd&quot;</span><span class="p">},</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="n">src</span><span class="o">=</span><span class="s2">&quot;pyscf&quot;</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="s2">&quot;e3nn&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="p">)</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="n">H_e3nn</span> <span class="o">=</span> <span class="n">H_pyscf</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">idx</span><span class="p">)]</span>
+</code></pre></div>
+<h3 id="molecule">Molecule 통합 사용<a class="headerlink" href="#molecule" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">molecule</span><span class="w"> </span><span class="kn">import</span> <span class="n">Molecule</span><span class="p">,</span> <span class="n">BasisInfo</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">mol</span> <span class="o">=</span> <span class="n">Molecule</span><span class="o">.</span><span class="n">load_npz</span><span class="p">(</span><span class="s2">&quot;sample.npz&quot;</span><span class="p">)</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">mol</span><span class="o">.</span><span class="n">basis_info</span> <span class="o">=</span> <span class="n">BasisInfo</span><span class="o">.</span><span class="n">from_name</span><span class="p">(</span><span class="s2">&quot;def2-svp&quot;</span><span class="p">)</span>  <span class="c1"># convention=&quot;pyscf&quot; (기본)</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1"># 변환</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="n">mol_e3nn</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">to_convention</span><span class="p">(</span><span class="s2">&quot;e3nn&quot;</span><span class="p">)</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1"># 저장 시 변환</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="n">mol</span><span class="o">.</span><span class="n">save_npz</span><span class="p">(</span><span class="s2">&quot;out.npz&quot;</span><span class="p">,</span> <span class="n">convention</span><span class="o">=</span><span class="s2">&quot;e3nn&quot;</span><span class="p">)</span>          <span class="c1"># e3nn으로 변환 후 저장</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="n">mol</span><span class="o">.</span><span class="n">save_npz</span><span class="p">(</span><span class="s2">&quot;out.npz&quot;</span><span class="p">,</span> <span class="n">packed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">convention</span><span class="o">=</span><span class="s2">&quot;e3nn&quot;</span><span class="p">)</span>  <span class="c1"># 압축 + 변환</span>
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">BasisInfo에 convention이 저장됨</p>
+<p><code>save_npz()</code>/<code>load_npz()</code> 시 <code>basis_info.convention</code> 필드가 함께 저장되므로,
+로드할 때 현재 데이터가 어느 convention인지 항상 알 수 있다.</p>
+</div>
+<h2 id="_5">관련 파일<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h3 id="dft-dataset">dft-dataset (재사용 가능 유틸리티)<a class="headerlink" href="#dft-dataset" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1680,23 +1931,42 @@ GPU에서 CUDA kernel launch가 누적되어 오히려 CPU보다 느림.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>src/common/orbital_conventions.py</code></td>
+<td><code>projects/dft-dataset/src/conventions.py</code></td>
+<td>convention 정의 + reorder 엔진</td>
+</tr>
+<tr>
+<td><code>projects/dft-dataset/src/molecule.py</code></td>
+<td><code>Molecule.to_convention()</code>, <code>BasisInfo</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="qhflow2">QHFlow2 (프로젝트 내부용)<a class="headerlink" href="#qhflow2" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>파일</th>
+<th>역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>projects/QHFlow2/src/common/orbital_conventions.py</code></td>
 <td>convention 정의</td>
 </tr>
 <tr>
-<td><code>src/common/matrix_transforms.py</code></td>
+<td><code>projects/QHFlow2/src/common/matrix_transforms.py</code></td>
 <td>변환 엔진</td>
 </tr>
 <tr>
-<td><code>src/models/QHFlow.py</code></td>
+<td><code>projects/QHFlow2/src/models/QHFlow.py</code></td>
 <td>좌표 permutation</td>
 </tr>
 <tr>
-<td><code>src/models/layers.py</code></td>
+<td><code>projects/QHFlow2/src/models/layers.py</code></td>
 <td>Expansion 클래스 (CG tensor product)</td>
 </tr>
 <tr>
-<td><code>src/utils.py</code></td>
+<td><code>projects/QHFlow2/src/utils.py</code></td>
 <td>간단한 Expansion (weight 없는 버전)</td>
 </tr>
 </tbody>
