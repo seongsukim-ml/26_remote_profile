@@ -1,329 +1,219 @@
 # Plot Style Guide
 
-QHFlow2 `_asset/` 노트북들에서 추출한 시각화 컨벤션 정리.
-새 프로젝트에서 그림을 그릴 때 이 가이드를 따른다.
+논문/발표용 시각화 컨벤션. `labutils.plotting` 패키지로 구현되어 있다.
+
+!!! tip "핵심 원칙"
+    Plot을 그릴 때는 **반드시** `labutils.plotting`을 사용한다.
+    직접 style 코드를 복붙하지 않는다.
 
 ---
 
-## Font
+## 설치
 
-### Primary: DIN
+`labutils`는 editable install로 관리. 각 conda env에서 한 번만 실행:
+
+```bash
+pip install -e /home1/irteam/data-vol1/projects/utils
+```
+
+소스 위치: `/home1/irteam/data-vol1/projects/utils/src/labutils/`
+
+---
+
+## 빠른 시작
 
 ```python
-from pathlib import Path
-from matplotlib import font_manager as fm
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import numpy as np
+from labutils.plotting import setup_fonts, style_ax, bold_legend, save, THEMES, SIZES
 
-FONT_DIR = Path("/home1/irteam/data-vol1/projects/QHFlow2/_asset/font")  # adjust per project
+setup_fonts()  # DIN 2014 등록 (세션당 1회)
 
-for f in FONT_DIR.glob("*.[ot]tf"):
-    fm.fontManager.addfont(str(f))
+T = THEMES["warm"]
+S = SIZES["compact"]
 
-# Priority: DIN_2014 > DIN Expanded > DIN Regular > fallback
-plt.rcParams["font.family"] = "DIN_2014"  # or detected name
-plt.rcParams["font.sans-serif"] = ["DIN_2014", "Arial", "Helvetica", "DejaVu Sans"]
-plt.rcParams["axes.unicode_minus"] = False
-```
-
-### Font Size Convention
-
-| Element        | Publication (small fig) | Exploration (large fig) |
-|----------------|:-----------------------:|:-----------------------:|
-| Tick labels    | 7–8 pt                  | 10–12 pt               |
-| Axis labels    | 8–9 pt, **bold**        | 12 pt                  |
-| Annotations    | 6.5–7 pt                | 10 pt                  |
-| Legend          | 6.5–8 pt                | 10–12 pt               |
-| Title          | 10–14 pt                | 14–18 pt               |
-
-!!! tip "Reusable snippet"
-    ```python
-    FS = {"label": 8, "tick": 7, "annot": 7}  # publication defaults
-    ```
-
----
-
-## Color Palette
-
-### Primary Colors
-
-```python
-COLORS = {
-    "blue":   "#5384EC",
-    "yellow": "#F5B025",
-    "red":    "#D85140",
-}
-```
-
-### Extended Palette
-
-```python
-COLORS_EXT = {
-    "green":  "#009354",
-    "orange": "#D55E00",
-    "purple": "#9C27B0",
-    "teal":   "#4E79A7",
-    "darkred":"#C70600",
-}
-```
-
-### Per-model Colors (QHFlow2 specific)
-
-```python
-MODEL_COLORS = {
-    "QHFlow2":       "#E87A6B",
-    "MLIP-Nequip":   "#B0A9E6",
-    "MLIP-Gemnet-T": "#A5CF9F",
-    "MLIP-Dimenet":  "#C0C0C0",
-}
-```
-
-### Bar Chart / SCF Colors
-
-```python
-BAR_COLORS = ["#757575", "#C45C1C", "#5DA7E2"]
-```
-
-### Matrix Colormap
-
-- Hamiltonian/overlap matrix: `cmap="bwr"` (blue-white-red), symmetric `vmin=-max_val, vmax=max_val`
-- Correlation matrix: `cmap="coolwarm"`, `vmin=-1, vmax=1`
-
----
-
-## Figure Size
-
-### Publication Figures (small, single-column)
-
-```python
-ratio = 1.05  # tweak per figure
-fig, ax = plt.subplots(figsize=(2.3 * ratio, 1.45 * ratio))
-```
-
-### Multi-panel
-
-```python
-# Side-by-side (e.g., per-molecule comparison)
-fig, axes = plt.subplots(1, n, figsize=(2.2 * n * ratio, 1.55 * ratio), sharey=True)
-
-# 2x2 dissociation curves
-fig, axes = plt.subplots(2, 2, figsize=(5.0 * ratio, 2.8 * ratio))
-```
-
-### Bar Charts (wide)
-
-```python
-ratio = 0.8
-fig, axes = plt.subplots(1, 3, figsize=(16 * ratio, 3.5 * ratio))
-```
-
-### Exploration / Debugging
-
-```python
-fig, ax = plt.subplots(figsize=(10, 6))   # quick look
-fig, axes = plt.subplots(1, 3, figsize=(18, 5))  # parity plots
+fig, ax = plt.subplots(figsize=S["figsize"])
+ax.plot(x, y_ours, "-o", color=T["m1"], lw=S["lw_main"], ms=S["ms"],
+        alpha=0.9, label="Ours")
+ax.plot(x, y_base, "--o", color=T["m2"], lw=S["lw_base"], ms=S["ms"],
+        alpha=0.45, label="Baseline")
+ax.set_xlabel("Parameters / M", fontsize=S["label"])
+ax.set_ylabel("MAE / meV", fontsize=S["label"])
+style_ax(ax, tick_size=S["tick"], spine_lw=S["spine_lw"])
+bold_legend(ax, bold_name="Ours", fontsize=S["legend"])
+plt.tight_layout()
+save(fig, "my_plot")  # → my_plot.png (300dpi) + my_plot.pdf (600dpi)
 ```
 
 ---
 
-## Axis & Grid
+## API Reference
 
-### Ticks
+### `setup_fonts(font_dir=FONT_DIR)`
 
-```python
-ax.tick_params(direction="out", top=False, right=False, labelsize=FS["tick"])
-ax.tick_params(which="major", length=2.25)
-ax.tick_params(which="minor", length=1.25)
-```
+DIN 2014 폰트를 matplotlib에 등록하고 rcParams를 설정한다.
 
-### Grid
+- Font stack: DIN 2014 → Liberation Sans → DejaVu Sans
+- `pdf.fonttype = 42` (TrueType, Illustrator 편집 가능)
+- 폰트 파일 위치: `/home1/irteam/data-vol1/fonts/`
+- 세션당 1회 호출. 이미 복사된 폰트는 건너뛴다.
 
-```python
-# Horizontal grid only (default)
-ax.yaxis.grid(True, which="major", ls=":", alpha=0.9, linewidth=0.6, zorder=0)
-ax.xaxis.grid(False)
-ax.grid(False, which="minor")
-```
+### `style_ax(ax, *, grid_y=True, spine_lw=0.5, tick_size=6)`
 
-!!! note
-    Vertical grid lines are almost never used. Keep the x-axis clean.
+스타일 가이드에 맞게 축을 포맷한다.
 
-### Spines
+- **Box**: 4면 닫힘 (spine 모두 visible)
+- **Ticks**: bottom + left만, direction=out
+- **Grid**: y축만, 점선 (`:`, alpha=0.5, lw=0.4)
 
-```python
-for spine in ax.spines.values():
-    spine.set_linewidth(0.75)
-```
+### `bold_legend(ax, bold_name="", fontsize=5.5, **kwargs)`
 
-### Log Scale
+소프트 프레임 legend를 추가한다.
 
-```python
-from matplotlib import ticker
+- Frame: `edgecolor="#cccccc"`, `framealpha=0.95`, `linewidth=0.4`
+- `bold_name`에 해당하는 항목만 bold 처리
+- `**kwargs`는 `ax.legend()`에 전달
 
-ax.set_xscale("log")
-ax.set_yscale("log")
+### `save(fig, name, *, dpi=300, pdf_dpi=600, close=True)`
 
-# Minor ticks
-ax.xaxis.set_minor_locator(ticker.LogLocator(base=10, subs=np.arange(2, 10)))
-ax.xaxis.set_minor_formatter(ticker.NullFormatter())
-```
+PNG + PDF 동시 저장.
+
+- PNG: `dpi=300`, `facecolor="white"`, `bbox_inches="tight"`
+- PDF: `dpi=600`, `pad_inches=0.02`
+- `close=True`이면 저장 후 `plt.close(fig)`
+
+### `SIZES`
+
+사이즈 프리셋 dict. 키마다 `figsize`, `label`, `tick`, `legend`, `title`, `annot`, `lw_main`, `lw_base`, `ms`, `spine_lw` 포함.
+
+| Preset | 용도 | figsize | 폰트 기준 |
+|---|---|---|---|
+| `compact` | 논문 single-column | (2.5, 1.7) | 6–7 pt |
+| `normal` | 발표/double-column | (7, 3.5) | 9–11 pt |
+
+### `THEMES`
+
+컬러 테마 dict. 각 테마에 `m1`–`m4`, `bar`, `dft`, `ml`, `cmap` 포함.
+
+| Theme | 용도 | m1 (ours) | m2 | m3 | m4 |
+|---|---|---|---|---|---|
+| `warm` | 논문 기본 | `#E87A6B` | `#B0A9E6` | `#A5CF9F` | `#C0C0C0` |
+| `cool` | 슬라이드 | `#3B82F6` | `#F97316` | `#10B981` | `#A1A1AA` |
+| `earth` | Nature/Science | `#C44E52` | `#4C72B0` | `#55A868` | `#8C8C8C` |
+| `mono` | 흑백 인쇄 | `#1a1a1a` | `#666666` | `#999999` | `#cccccc` |
+| `accessible` | 색맹 안전 | `#E69F00` | `#56B4E9` | `#009E73` | `#CC79A7` |
+| `qh-coral` | QHFlow2 param_vs_perf | `#D85140` | `#5384EC` | `#F5B025` | `#7BA3F0` |
+| `qh-scaling` | QHFlow2 datascaling | `#E87A6B` | `#B0A9E6` | `#A5CF9F` | `#C0C0C0` |
+| `qh-scf` | QHFlow2 scf | `#8C6CE7` | `#C45C1C` | `#5DA7E2` | `#6F6F6F` |
+| `qh-tropical` | QHFlow2 pred_time | `#FF6B6B` | `#4ECDC4` | `#45B7D1` | `#98D8C8` |
+| `qh-vega` | QHFlow2 malon_draw | `#E45756` | `#4C78A8` | `#54A24B` | `#333333` |
 
 ---
 
-## Line & Marker
+## 스타일 규칙 요약
 
-### Data Lines
+| 항목 | 규칙 |
+|---|---|
+| Box (spine) | 4면 닫힘 |
+| Ticks | bottom + left만 (top/right 없음), outward |
+| Grid | y축만, 점선 (`:`, alpha=0.5) |
+| Unit 표기 | `quantity / unit` (IUPAC): `Energy / eV`, `Parameters / M` |
+| Legend | 반투명 배경 (#cccccc edge), 주인공만 bold |
+| 주인공 선 | 실선, 굵게 (`lw_main`), alpha=0.9 |
+| 비교 대상 | 점선/파선, 얇게 (`lw_base`), alpha=0.45 |
+| Axis label | **bold 아님** |
+| PDF | fonttype 42 (TrueType) |
 
-```python
-# "Ours" — bold, high contrast
-ax.plot(x, y, "-o", color=COLORS["blue"], linewidth=1.5, markersize=3.2, alpha=0.72, zorder=3)
+### Unit 표기 예시
 
-# Others — thinner, lower contrast
-ax.plot(x, y, "--s", color="#B0A9E6", linewidth=0.95, markersize=2.8, alpha=0.5, zorder=2)
-```
+| Bad | Good |
+|---|---|
+| `Energy (eV)` | `Energy / eV` |
+| `Parameters (M)` | `Parameters / M` |
+| `r(O-H) [Å]` | `$r_{\mathrm{O-H}}$ / Å` |
 
 ### Line Style Convention
 
-| Model / Series | Style |
-|---------------|-------|
-| Ours          | `-` (solid) |
-| Baseline 1    | `--` (dashed) |
-| Baseline 2    | `-.` (dash-dot) |
-| Baseline 3    | `:` (dotted) |
-
-### Reference Lines
-
-```python
-# Perfect prediction (parity)
-ax.plot(lim, lim, "r--", lw=2, label="Perfect prediction")
-
-# Threshold
-ax.axhline(90, color="r", linestyle="--", lw=1, alpha=0.7, label="90%")
-```
+| Series | Style | lw | alpha |
+|---|---|---|---|
+| Ours | `-` (solid) | `S["lw_main"]` | 0.9 |
+| Baseline 1 | `--` (dashed) | `S["lw_base"]` | 0.45 |
+| Baseline 2 | `-.` (dash-dot) | `S["lw_base"]` | 0.45 |
+| Baseline 3 | `:` (dotted) | `S["lw_base"]` | 0.45 |
 
 ---
 
-## Legend
+## 용례별 예시
+
+### Line Plot (모델 비교)
 
 ```python
-legend = ax.legend(
-    framealpha=1,
-    frameon=True,
-    edgecolor="black",
-    fontsize=FS["annot"],
-)
-legend.get_frame().set_linewidth(0.6)
+from labutils.plotting import setup_fonts, style_ax, bold_legend, save, THEMES, SIZES
+setup_fonts()
+T, S = THEMES["warm"], SIZES["compact"]
 
-# "Ours" label bold
-for text in legend.get_texts():
-    if "QHFlow" in text.get_text():
-        text.set_fontweight("bold")
-```
-
-### Multi-subplot Shared Legend
-
-```python
-fig.legend(
-    loc="lower center",
-    bbox_to_anchor=(0.5, -0.10),
-    ncol=3,
-    fontsize=12,
-    frameon=False,
-)
-```
-
----
-
-## Save
-
-### Publication (PDF, 600 DPI)
-
-```python
-fig.savefig("figure.pdf", dpi=600, bbox_inches="tight", pad_inches=0.02)
-```
-
-### Quick Preview (PNG, 300 DPI)
-
-```python
-fig.savefig("figure.png", dpi=300, bbox_inches="tight", facecolor="white")
-```
-
-!!! warning "Always"
-    - `bbox_inches="tight"` to avoid clipped labels
-    - `plt.close()` after save to free memory
-    - PDF for papers, PNG for quick sharing
-
----
-
-## Matrix Visualization (draw_util.matshow)
-
-```python
-from common.draw_util import matshow
-
-matshow(
-    matrix,
-    max_val=None,      # auto: abs(matrix).max() * 0.1
-    colorbar=True,
-    frame=True,        # spine border
-    ticks=False,       # axis ticks off
-    save_name=None,    # saves at 600 dpi
-    drawline=[],       # orbital block separators
-    ratio=0.8,         # figsize=(6*ratio, 5*ratio)
-)
-```
-
-**Block separator lines:**
-
-- Positive values in `drawline` → gray dashed (`--`, lw=0.3)
-- Negative values in `drawline` → black solid (`-`, lw=0.5)
-
----
-
-## 3D Molecule (draw_util.view_molecule_3d)
-
-```python
-from common.draw_util import view_molecule_3d
-
-view_molecule_3d(
-    atoms,              # atomic numbers
-    positions,          # coordinates in Angstrom
-    style="stick",      # "line", "stick", "sphere", "cartoon"
-    surface=False,      # molecular surface
-    surface_opacity=0.5,
-    size=(600, 400),
-)
-```
-
----
-
-## Template: New Figure
-
-```python
-import matplotlib.pyplot as plt
-import numpy as np
-
-# ---- Style setup ----
-FS = {"label": 8, "tick": 7, "annot": 7}
-COLORS = {"blue": "#5384EC", "yellow": "#F5B025", "red": "#D85140"}
-ratio = 1.05
-
-# ---- Figure ----
-fig, ax = plt.subplots(figsize=(2.3 * ratio, 1.45 * ratio))
-
-ax.plot(x, y, "-o", color=COLORS["blue"], linewidth=1.5, markersize=3, zorder=3)
-
-ax.set_xlabel("X Label", fontsize=FS["label"], fontweight="bold")
-ax.set_ylabel("Y Label", fontsize=FS["label"], fontweight="bold")
-ax.tick_params(direction="out", top=False, right=False, labelsize=FS["tick"])
-ax.yaxis.grid(True, which="major", ls=":", alpha=0.9, linewidth=0.6, zorder=0)
-ax.xaxis.grid(False)
-
-for spine in ax.spines.values():
-    spine.set_linewidth(0.75)
-
-legend = ax.legend(framealpha=1, frameon=True, edgecolor="black", fontsize=FS["annot"])
-legend.get_frame().set_linewidth(0.6)
-
+fig, ax = plt.subplots(figsize=S["figsize"])
+ax.plot(x, y1, "-o",  color=T["m1"], lw=S["lw_main"], ms=S["ms"], alpha=0.9, label="Ours")
+ax.plot(x, y2, "--s", color=T["m2"], lw=S["lw_base"], ms=S["ms"], alpha=0.45, label="Baseline")
+ax.set_xlabel("Parameters / M", fontsize=S["label"])
+ax.set_ylabel("MAE / meV", fontsize=S["label"])
+style_ax(ax, tick_size=S["tick"], spine_lw=S["spine_lw"])
+bold_legend(ax, bold_name="Ours", fontsize=S["legend"])
 plt.tight_layout()
-fig.savefig("output.pdf", dpi=600, bbox_inches="tight", pad_inches=0.02)
-plt.close()
+save(fig, "line_plot")
 ```
+
+### Bar Chart
+
+```python
+T, S = THEMES["warm"], SIZES["normal"]
+
+fig, ax = plt.subplots(figsize=(4, 2.5))
+bars = ax.bar(labels, values, color=T["bar"])
+ax.bar_label(bars, padding=1, fmt="%.1f", fontsize=S["annot"])
+ax.set_ylabel("SCF Cycles", fontsize=S["label"])
+style_ax(ax, tick_size=S["tick"])
+plt.tight_layout()
+save(fig, "bar_chart")
+```
+
+### Heatmap (seaborn)
+
+```python
+import seaborn as sns
+T = THEMES["warm"]
+
+fig, ax = plt.subplots(figsize=(3.5, 2.0))
+sns.heatmap(df, annot=True, fmt=".1f", cmap=T["cmap"],
+            linewidths=0.5, linecolor="white", ax=ax)
+style_ax(ax, grid_y=False)
+save(fig, "heatmap")
+```
+
+### Violin (seaborn)
+
+```python
+T = THEMES["warm"]
+palette = [T["m1"], T["m2"], T["m3"], T["m4"]]
+
+fig, ax = plt.subplots(figsize=(3.0, 1.8))
+sns.violinplot(data=df, x="Model", y="|Error| / meV", hue="Model",
+               palette=palette, inner="quart", linewidth=0.6, cut=0, legend=False)
+style_ax(ax)
+save(fig, "violin")
+```
+
+---
+
+## 샘플 출력
+
+샘플 생성 스크립트: `/tmp/style_sample.py`
+
+```bash
+python /tmp/style_sample.py
+# → /tmp/style_sample_{1,2,3}.{png,pdf}
+```
+
+Figure 1 (line), Figure 2 (bar), Figure 3 (dissociation curve) 세 가지 유형.
