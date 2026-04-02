@@ -80,37 +80,55 @@ projects/<name>/
 
 ## Workflow Orchestration
 
-### 1. Plan Mode Default
+### 1. Think Before Coding
+- 가정을 명시적으로 표현 — 불확실하면 추측하지 말고 질문
+- 모호한 요청에 해석이 여러 개면, 하나를 몰래 고르지 말고 선택지를 제시
+- 더 단순한 방법이 있으면 push-back — "이렇게 하면 더 간단합니다"
+- 혼란스러우면 멈추고 무엇이 불분명한지 말하기
+
+### 2. Plan Mode Default
 - 3단계 이상 또는 아키텍처 결정이 필요한 작업은 반드시 plan mode 진입
 - 진행이 꼬이면 즉시 STOP하고 re-plan — 밀어붙이지 않기
 - 구현뿐 아니라 검증 단계에도 plan mode 활용
 - 모호함을 줄이기 위해 상세 spec을 먼저 작성
 
-### 2. Subagent Strategy
-- Subagent를 적극 활용하여 main context window를 깨끗하게 유지
-- 리서치, 탐색, 병렬 분석은 subagent에 위임
-- 복잡한 문제는 compute를 더 투입 (subagent 병렬)
-- 하나의 subagent에는 하나의 task만 부여
+### 3. Subagent Strategy
+- Subagent는 필요할 때만 최소한으로 사용 (토큰 비용 주의)
+- 병렬 subagent 금지 — 순차적으로 하나씩만 실행
+- 간단한 검색은 Glob/Grep 직접 사용, subagent 불필요
 
-### 3. Self-Improvement Loop
+### 4. Self-Improvement Loop
 - 사용자 교정 후 반드시 `tasks/lessons.md`에 패턴 기록
 - 같은 실수를 방지하는 규칙을 스스로 작성
 - 실수율이 줄어들 때까지 반복 개선
 - 세션 시작 시 해당 프로젝트의 lessons 검토
 
-### 4. Verification Before Done
+### 5. Verification Before Done (Goal-Driven)
+- 구현 전에 성공 기준을 먼저 정의 — "무엇이 되면 완료인가?"
+- 각 단계를 `step → verify` 루프로 실행:
+  ```
+  1. [Step] → verify: [check]
+  2. [Step] → verify: [check]
+  ```
 - 작동을 증명하지 않고 완료 표시 금지
 - 변경 사항과 main 간 동작 차이를 diff로 확인
 - "시니어 엔지니어가 승인할 수준인가?" 자문
 - 테스트 실행, 로그 확인, 정확성 입증
 
-### 5. Demand Elegance (Balanced)
+### 6. Surgical Changes
+- 요청과 직접 관련된 줄만 수정 — 인접 코드, 주석, 포맷 "개선" 금지
+- 기존 스타일과 다르더라도 기존 스타일에 맞추기
+- 내 변경이 만든 orphan(미사용 import, 변수, 함수)은 정리
+- 기존에 있던 dead code는 언급만 하고 삭제하지 않기 (요청 시에만 삭제)
+- 사소한 작업(오타, 한 줄 수정)에는 이 모든 rigour를 적용하지 않아도 됨
+
+### 7. Demand Elegance (Balanced)
 - 비자명한 변경에는 잠시 멈추고 "더 우아한 방법은?" 자문
 - hacky하다면 "지금 아는 것을 모두 활용한 우아한 해법"을 구현
 - 단순하고 명백한 수정에는 적용하지 않음 — over-engineer 금지
 - 제출 전에 자기 코드에 도전
 
-### 6. Autonomous Bug Fixing
+### 8. Autonomous Bug Fixing
 - 버그 리포트를 받으면 바로 수정. hand-holding 요청 금지
 - 로그, 에러, 실패 테스트를 추적하여 직접 해결
 - 사용자의 context switching 제로 목표
@@ -127,9 +145,9 @@ projects/<name>/
 
 ## Core Principles
 
-- **Simplicity First**: 모든 변경을 가능한 한 단순하게. 최소한의 코드 영향
+- **Simplicity First**: 200줄이 50줄로 가능하면 50줄로. 요청하지 않은 기능, 추상화, 설정 가능성 추가 금지. speculative code 금지
 - **No Laziness**: 근본 원인을 찾기. 임시 수정 금지. 시니어 개발자 기준
-- **Minimal Impact**: 필요한 부분만 수정. 버그를 도입하지 않기
+- **Minimal Impact**: 필요한 부분만 수정. 모든 변경 줄이 사용자 요청에 직접 trace 가능해야 함
 
 ## External Tools
 

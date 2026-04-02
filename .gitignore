@@ -17,6 +17,12 @@ rclone/
 # Secrets directory (netrc, API keys)
 secrets/
 
+# Large/binary directories (managed locally, not in git)
+fonts/
+tools/
+archive/
+bin/code
+
 # OS
 .DS_Store
 Thumbs.db
